@@ -1,6 +1,6 @@
 /*
 *	Loader Library by Parra Studios
-*	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+*	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 *
 *	A plugin for loading mock code at run-time into a process.
 *
@@ -11,7 +11,7 @@
 
 #include <loader/loader_impl_interface.h>
 
-loader_impl_interface mock_loader_impl_interface_singleton()
+loader_impl_interface mock_loader_impl_interface_singleton(void)
 {
 	static struct loader_impl_interface_type loader_impl_interface_mock = {
 		&mock_loader_impl_initialize,

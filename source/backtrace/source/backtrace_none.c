@@ -2,7 +2,7 @@
  *	Backtrace Library by Parra Studios
  *	A cross-platform library for supporting SEGV catching and backtracing.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -22,12 +22,12 @@
 
 #include <backtrace/backtrace.h>
 
-int backtrace_initialize()
+int backtrace_initialize(void)
 {
 	return 0;
 }
 
-int backtrace_destroy()
+int backtrace_destroy(void)
 {
 	return 0;
 }

@@ -2,7 +2,7 @@
  *	Memory Library by Parra Studios
  *	A generic cross-platform memory utility.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ static void memory_allocator_std_destroy(memory_allocator_impl impl);
 
 /* -- Methods -- */
 
-memory_allocator_iface memory_allocator_std_iface()
+memory_allocator_iface memory_allocator_std_iface(void)
 {
 	static struct memory_allocator_iface_type allocator_std_iface = {
 		&memory_allocator_std_create,

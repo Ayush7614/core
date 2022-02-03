@@ -14,9 +14,6 @@ set(feature_file "include/${target}/${target}_features.h")
 set(export_file  "include/${target}/${target}_api.h")
 set(export_macro "${target_upper}_API")
 
-# Define project options
-option(${target_upper}_LAZY "Defines a lazy initialization and destruction of the loader library" ON)
-
 #
 # Compiler warnings
 #
@@ -170,8 +167,6 @@ target_compile_definitions(${target}
 	PRIVATE
 	${target_upper}_EXPORTS # Export API
 
-	$<$<BOOL:${target_upper}_LAZY>:${target_upper}_LAZY>
-
 	PUBLIC
 	$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${target_upper}_STATIC_DEFINE>
 	${DEFAULT_COMPILE_DEFINITIONS}
@@ -203,13 +198,4 @@ target_link_libraries(${target}
 	${DEFAULT_LINKER_OPTIONS}
 
 	INTERFACE
-)
-
-#
-# Deployment
-#
-
-# Export
-install(TARGETS ${target}
-	EXPORT  "${target}-export" COMPONENT dev
 )

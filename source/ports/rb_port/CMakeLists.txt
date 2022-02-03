@@ -166,6 +166,7 @@ target_include_directories(${SWIG_MODULE_${target}_REAL_NAME}
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_BINARY_DIR}/include
 
+	$<TARGET_PROPERTY:${META_PROJECT_NAME}::metacall,INCLUDE_DIRECTORIES> # MetaCall includes
 	${Ruby_INCLUDE_DIRS} # Ruby includes
 
 	PUBLIC
@@ -240,29 +241,10 @@ target_link_libraries(${SWIG_MODULE_${target}_REAL_NAME}
 
 # Library
 install(TARGETS ${SWIG_MODULE_${target}_REAL_NAME}
-	EXPORT  "${target}-export"			COMPONENT dev
-	RUNTIME DESTINATION ${INSTALL_BIN}	COMPONENT runtime
-	LIBRARY DESTINATION ${INSTALL_SHARED} COMPONENT runtime
-	ARCHIVE DESTINATION ${INSTALL_LIB}	COMPONENT dev
-)
-
-# Header files
-install(DIRECTORY
-	${CMAKE_CURRENT_SOURCE_DIR}/include/${target} DESTINATION ${INSTALL_INCLUDE}
-	COMPONENT dev
-)
-
-# Generated header files
-install(DIRECTORY
-	${CMAKE_CURRENT_BINARY_DIR}/include/${target} DESTINATION ${INSTALL_INCLUDE}
-	COMPONENT dev
-)
-
-# CMake config
-install(EXPORT ${target}-export
-	NAMESPACE   ${META_PROJECT_NAME}::
-	DESTINATION ${INSTALL_CMAKE}/${target}
-	COMPONENT   dev
+	EXPORT  "${target}-export"				COMPONENT dev
+	RUNTIME DESTINATION ${INSTALL_BIN}		COMPONENT runtime
+	LIBRARY DESTINATION ${INSTALL_SHARED}	COMPONENT runtime
+	ARCHIVE DESTINATION ${INSTALL_LIB}		COMPONENT dev
 )
 
 #
@@ -275,7 +257,7 @@ if(NOT OPTION_BUILD_LOADERS OR NOT OPTION_BUILD_LOADERS_PY OR NOT OPTION_BUILD_L
 endif()
 
 set(rb_port_test "${target}_test")
-set(rb_port_test_path "${CMAKE_BINARY_DIR}/${rb_port_test}.rb")
+set(rb_port_test_path "${PROJECT_OUTPUT_DIR}/${rb_port_test}.rb")
 
 # Require module name
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

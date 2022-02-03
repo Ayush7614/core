@@ -2,7 +2,7 @@
  *	Loader Library by Parra Studios
  *	A plugin for loading net code at run-time into a process.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -19,6 +19,10 @@
 */
 
 #include <cs_loader/host_environment.h>
+
+#include <wchar.h>
+
+#include <log/log.h>
 
 host_environment::host_environment(char *dotnet_root) :
 	clr_runtime_host(nullptr)
@@ -37,7 +41,7 @@ host_environment::host_environment(char *dotnet_root) :
 	}
 
 	// Copy the directory path
-	::wcsncpy_s(this->host_directory_path, this->host_path, lastBackslashIndex + 1);
+	wcsncpy_s(this->host_directory_path, this->host_path, lastBackslashIndex + 1);
 
 	// Save the exe name
 	this->host_exe_name = this->host_path + lastBackslashIndex + 1;

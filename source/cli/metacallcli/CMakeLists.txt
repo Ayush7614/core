@@ -176,47 +176,42 @@ else()
 	set(GREP_COMMAND grep)
 endif()
 
+include(TestEnvironmentVariables)
+
 add_test(NAME ${target}
 	COMMAND ${TEST_COMMAND} "echo 'load mock a.mock\ninspect\nexit' | $<TARGET_FILE:${target}> | ${GREP_COMMAND} \"function three_str(a_str, b_str, c_str)\""
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+set_property(TEST ${target}
+	PROPERTY LABELS ${target}
+)
+
+test_environment_variables(${target}
+	""
+	${TESTS_ENVIRONMENT_VARIABLES}
 )
 
 #
 # Define dependencies
 #
 
-include(GeneratorExpressions)
-
-cmake_expand_generator_expressions(DEPENDENCIES
-	$<$<BOOL:${OPTION_BUILD_LOADERS_NODE}>:node_loader>
-	$<$<BOOL:${OPTION_BUILD_LOADERS_PY}>:py_loader>
-	$<$<BOOL:${OPTION_BUILD_LOADERS_RB}>:rb_loader>
-	$<$<BOOL:${OPTION_BUILD_LOADERS_CS}>:cs_loader>
-	$<$<BOOL:${OPTION_BUILD_LOADERS_JSM}>:jsm_loader>
-	$<$<BOOL:${OPTION_BUILD_LOADERS_JS}>:js_loader>
-	$<$<BOOL:${OPTION_BUILD_LOADERS_MOCK}>:mock_loader>
-	$<$<BOOL:${OPTION_BUILD_LOADERS_C}>:c_loader>
-	$<$<BOOL:${OPTION_BUILD_LOADERS_FILE}>:file_loader>
+add_loader_dependencies(${target}
+	node_loader
+	py_loader
+	rb_loader
+	cs_loader
+	jsm_loader
+	js_loader
+	mock_loader
+	c_loader
+	file_loader
+	ts_loader
 )
-
-if(DEPENDENCIES)
-	add_dependencies(${target} ${DEPENDENCIES})
-endif()
 
 #
 # Define tests
 #
-
-set_property(TEST ${target}
-	PROPERTY LABELS ${target}
-)
-
-include(TestEnvironmentVariables)
-
-test_environment_variables(${target}
-	""
-	${TESTS_ENVIRONMENT_VARIABLES}
-)
 
 if(OPTION_BUILD_LOADERS AND OPTION_BUILD_LOADERS_NODE AND OPTION_BUILD_SCRIPTS AND OPTION_BUILD_SCRIPTS_NODE)
 	add_test(NAME ${target}-node

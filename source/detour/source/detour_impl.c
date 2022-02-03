@@ -1,6 +1,6 @@
 /*
  *	Detour Library by Parra Studios
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	A cross-platform library providing detours, function hooks and trampolines.
  *
@@ -53,7 +53,7 @@ dynlink detour_impl_load_dynlink(const char *path, const char *name)
 
 	char detour_dynlink_name[DETOUR_DYNLINK_NAME_FULL_SIZE];
 
-	strncpy(detour_dynlink_name, name, DETOUR_DYNLINK_NAME_FULL_SIZE);
+	strncpy(detour_dynlink_name, name, DETOUR_DYNLINK_NAME_FULL_SIZE - 1);
 
 	strncat(detour_dynlink_name, detour_dynlink_suffix,
 		DETOUR_DYNLINK_NAME_FULL_SIZE - strnlen(detour_dynlink_name, DETOUR_DYNLINK_NAME_FULL_SIZE - 1) - 1);
@@ -90,7 +90,7 @@ int detour_impl_load_symbol(dynlink handle, const char *name, dynlink_symbol_add
 	return dynlink_symbol(handle, detour_dynlink_symbol, singleton_addr_ptr);
 }
 
-detour_impl detour_impl_create()
+detour_impl detour_impl_create(void)
 {
 	detour_impl impl = malloc(sizeof(struct detour_impl_type));
 

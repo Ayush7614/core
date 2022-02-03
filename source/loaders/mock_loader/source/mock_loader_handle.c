@@ -2,7 +2,7 @@
  *	Loader Library by Parra Studios
  *	A plugin for loading mock code at run-time into a process.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ int mock_loader_impl_handle_discover(loader_impl impl, loader_handle handle, con
 
 int mock_loader_impl_handle_destroy(loader_impl impl, loader_handle handle);
 
-loader_impl_handle mock_loader_impl_handle_singleton()
+loader_impl_handle mock_loader_impl_handle_singleton(void)
 {
 	static struct loader_impl_handle_type loader_impl_handle_mock = {
 		&mock_loader_impl_handle_create,

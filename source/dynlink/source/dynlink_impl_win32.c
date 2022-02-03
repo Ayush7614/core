@@ -2,7 +2,7 @@
  *	Dynamic Link Library by Parra Studios
  *	A library for dynamic loading and linking shared objects at run-time.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -89,6 +89,15 @@ int dynlink_impl_interface_unload_win32(dynlink handle, dynlink_impl impl)
 	return (FreeLibrary(impl) == FALSE);
 }
 
+char *dynlink_impl_interface_lib_path_win32(dynlink_name name, int (*comparator)(dynlink_path, dynlink_name))
+{
+	/* TODO */
+	(void)name;
+	(void)comparator;
+
+	return NULL;
+}
+
 dynlink_impl_interface dynlink_impl_interface_singleton_win32(void)
 {
 	static struct dynlink_impl_interface_type impl_interface_win32 = {
@@ -96,7 +105,8 @@ dynlink_impl_interface dynlink_impl_interface_singleton_win32(void)
 		&dynlink_impl_interface_get_name_win32,
 		&dynlink_impl_interface_load_win32,
 		&dynlink_impl_interface_symbol_win32,
-		&dynlink_impl_interface_unload_win32
+		&dynlink_impl_interface_unload_win32,
+		&dynlink_impl_interface_lib_path_win32
 	};
 
 	return &impl_interface_win32;

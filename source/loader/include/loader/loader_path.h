@@ -2,7 +2,7 @@
  *	Loader Library by Parra Studios
  *	A library for loading executable code at run-time into a process.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -42,6 +42,8 @@ LOADER_API size_t loader_path_get_module_name(const loader_naming_path path, loa
 LOADER_API size_t loader_path_get_path(const loader_naming_path path, size_t size, loader_naming_path absolute);
 
 LOADER_API size_t loader_path_get_relative(const loader_naming_path base, const loader_naming_path path, loader_naming_path relative);
+
+LOADER_API int loader_path_is_subpath(const loader_naming_path parent, const loader_naming_path child);
 
 LOADER_API int loader_path_is_absolute(const loader_naming_path path);
 

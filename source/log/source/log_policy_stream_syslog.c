@@ -1,6 +1,6 @@
 /*
 *	Logger Library by Parra Studios
-*	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+*	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 *
 *	A generic logger library providing application execution reports.
 *
@@ -69,7 +69,7 @@ static int log_policy_stream_syslog_destroy(log_policy policy);
 
 /* -- Methods -- */
 
-log_policy_interface log_policy_stream_syslog_interface()
+log_policy_interface log_policy_stream_syslog_interface(void)
 {
 	static struct log_policy_stream_impl_type log_policy_stream_syslog_impl_obj = {
 		&log_policy_stream_syslog_write,

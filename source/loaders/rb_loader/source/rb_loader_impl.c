@@ -1,6 +1,6 @@
 /*
  *	Loader Library by Parra Studios
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	A plugin for loading ruby code at run-time into a process.
  *
@@ -887,10 +887,11 @@ int rb_loader_impl_execution_path(loader_impl impl, const loader_naming_path pat
 VALUE rb_loader_impl_load_data_absolute(VALUE module_absolute_path)
 {
 	VALUE file_exists = rb_funcall(rb_cFile, rb_intern("exist?"), 1, module_absolute_path);
+	VALUE file_valid = rb_funcall(rb_cFile, rb_intern("file?"), 1, module_absolute_path);
 
 	log_write("metacall", LOG_LEVEL_DEBUG, "RBPATH: %s", RSTRING_PTR(module_absolute_path));
 
-	if (file_exists == Qtrue)
+	if (file_exists == Qtrue && file_valid == Qtrue)
 	{
 		VALUE module_data = rb_funcall(rb_cIO, rb_intern("read"), 1, module_absolute_path);
 
@@ -949,14 +950,13 @@ VALUE rb_loader_impl_module_eval_protect(VALUE args)
 
 int rb_loader_impl_module_eval(VALUE module, VALUE module_data, VALUE *result)
 {
-	const int argc = 1;
-	VALUE argv[argc];
+	VALUE argv[1];
 	struct loader_impl_rb_module_eval_protect_type protect;
 	int state;
 
 	argv[0] = module_data;
 
-	protect.argc = argc;
+	protect.argc = 1;
 	protect.argv = argv;
 	protect.module = module;
 

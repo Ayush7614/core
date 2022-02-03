@@ -2,7 +2,7 @@
  *	MetaCall Library by Parra Studios
  *	A library for providing a foreign function interface calls.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -118,9 +118,9 @@ struct metacall_log_custom_va_list_type
 struct metacall_log_custom_type
 {
 	void *context;
-	size_t (*format_size)(void *, const char *, size_t, size_t, const char *, const char *, const char *, const char *, metacall_log_custom_va_list);
-	size_t (*format_serialize)(void *, void *, const size_t, const char *, size_t, size_t, const char *, const char *, const char *, const char *, metacall_log_custom_va_list);
-	size_t (*format_deserialize)(void *, const void *, const size_t, const char *, size_t, size_t, const char *, const char *, const char *, const char *, metacall_log_custom_va_list);
+	size_t (*format_size)(void *, const char *, uint64_t, size_t, const char *, const char *, const char *, const char *, metacall_log_custom_va_list);
+	size_t (*format_serialize)(void *, void *, const size_t, const char *, uint64_t, size_t, const char *, const char *, const char *, const char *, metacall_log_custom_va_list);
+	size_t (*format_deserialize)(void *, const void *, const size_t, const char *, uint64_t, size_t, const char *, const char *, const char *, const char *, metacall_log_custom_va_list);
 	int (*stream_write)(void *, const char *, const size_t);
 	int (*stream_flush)(void *);
 };

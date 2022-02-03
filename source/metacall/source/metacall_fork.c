@@ -1,6 +1,6 @@
 /*
  *	MetaCall Library by Parra Studios
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	A library for providing a foreign function interface calls.
  *
@@ -215,7 +215,7 @@ void (*metacall_fork_func(void))(void)
 	return (void (*)(void)) & fork;
 }
 
-pid_t metacall_fork_hook()
+pid_t metacall_fork_hook(void)
 {
 	pid_t (*metacall_fork_trampoline)(void) = (pid_t(*)(void))detour_trampoline(metacall_detour_handle);
 
@@ -353,7 +353,7 @@ void metacall_fork(metacall_pre_fork_callback_ptr pre_callback, metacall_post_fo
 	metacall_post_fork_callback = post_callback;
 }
 
-int metacall_fork_destroy()
+int metacall_fork_destroy(void)
 {
 	int result = 0;
 

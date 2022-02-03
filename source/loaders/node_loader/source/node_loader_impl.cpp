@@ -1,6 +1,6 @@
 /*
  *	Loader Library by Parra Studios
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	A plugin for loading nodejs code at run-time into a process.
  *
@@ -57,6 +57,8 @@ extern char **environ;
 #include <reflect/reflect_scope.h>
 #include <reflect/reflect_type.h>
 
+#include <portability/portability_executable_path.h>
+
 /* TODO: Make logs thread safe */
 #include <log/log.h>
 
@@ -74,11 +76,14 @@ extern char **environ;
 #include <thread>
 
 /* Disable warnings from V8 and NodeJS */
-#if defined(_MSC_VER) || defined(__clang__)
+#if defined(_MSC_VER)
 	#pragma warning(push)
 	#pragma warning(disable : 4100)
 	#pragma warning(disable : 4275)
 	#pragma warning(disable : 4251)
+#elif defined(__clang__)
+	#pragma clang diagnostic push
+	#pragma clang diagnostic ignored "-Wunused-parameter"
 #elif defined(__GNUC__)
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -96,8 +101,10 @@ extern char **environ;
 #include <uv.h>
 
 /* Disable warnings from V8 and NodeJS */
-#if defined(_MSC_VER) || defined(__clang__)
+#if defined(_MSC_VER)
 	#pragma warning(pop)
+#elif defined(__clang__)
+	#pragma clang diagnostic pop
 #elif defined(__GNUC__)
 	#pragma GCC diagnostic pop
 #endif
@@ -2837,8 +2844,8 @@ value node_loader_impl_discover_function_safe(napi_env env, loader_impl_async_di
 
 		/* Retrieve the function properties */
 		napi_value function_sig;
-		napi_value function_types;
-		napi_value function_ret;
+		napi_value function_types = nullptr;
+		napi_value function_ret = nullptr;
 		napi_value function_is_async;
 		uint32_t function_sig_length;
 
@@ -3176,8 +3183,8 @@ void node_loader_impl_discover_safe(napi_env env, loader_impl_async_discover_saf
 				napi_value function_descriptor;
 				napi_value function_ptr;
 				napi_value function_sig;
-				napi_value function_types;
-				napi_value function_ret;
+				napi_value function_types = nullptr;
+				napi_value function_ret = nullptr;
 				napi_value function_is_async;
 				uint32_t function_sig_length;
 
@@ -3761,26 +3768,17 @@ void node_loader_impl_thread(void *data)
 	uv_mutex_lock(&node_impl->mutex);
 
 	/* TODO: Reimplement from here to ... */
-
-	const size_t path_max_length = NODE_LOADER_IMPL_PATH_SIZE;
-	node_impl_path exe_path_str = { 0 };
+	portability_executable_path_str exe_path_str = { 0 };
+	portability_executable_path_length length = 0;
 	size_t exe_path_str_size = 0, exe_path_str_offset = 0;
 
-#if defined(WIN32) || defined(_WIN32)
-	unsigned int length = GetModuleFileName(NULL, exe_path_str, path_max_length);
-#else
-	ssize_t length = readlink("/proc/self/exe", exe_path_str, path_max_length);
-#endif
-
-	size_t iterator;
-
-	if (length == -1 || length == path_max_length)
+	if (portability_executable_path(exe_path_str, &length) != 0)
 	{
 		/* Report error (TODO: Implement it with thread safe logs) */
-		node_impl->error_message = "Node loader register invalid working directory path";
+		node_impl->error_message = "Node loader failed to retrieve the executable path";
 
 		/* TODO: Make logs thread safe */
-		/* log_write("metacall", LOG_LEVEL_ERROR, "node loader register invalid working directory path (%s)", exe_path_str); */
+		/* log_write("metacall", LOG_LEVEL_ERROR, "Node loader failed to retrieve the executable path (%s)", exe_path_str); */
 
 		/* Signal start condition */
 		uv_cond_signal(&node_impl->cond);
@@ -3791,7 +3789,7 @@ void node_loader_impl_thread(void *data)
 		return;
 	}
 
-	for (iterator = 0; iterator <= (size_t)length; ++iterator)
+	for (size_t iterator = 0; iterator <= (size_t)length; ++iterator)
 	{
 #if defined(WIN32) || defined(_WIN32)
 		if (exe_path_str[iterator] == '\\')
@@ -4826,84 +4824,84 @@ void node_loader_impl_destroy_safe_impl(loader_impl_node node_impl, napi_env env
 	{
 		/* Safe initialize */
 		{
-			napi_status status = napi_release_threadsafe_function(node_impl->threadsafe_initialize, napi_tsfn_abort);
+			status = napi_release_threadsafe_function(node_impl->threadsafe_initialize, napi_tsfn_abort);
 
 			node_loader_impl_exception(env, status);
 		}
 
 		/* Safe execution path */
 		{
-			napi_status status = napi_release_threadsafe_function(node_impl->threadsafe_execution_path, napi_tsfn_abort);
+			status = napi_release_threadsafe_function(node_impl->threadsafe_execution_path, napi_tsfn_abort);
 
 			node_loader_impl_exception(env, status);
 		}
 
 		/* Safe load from file */
 		{
-			napi_status status = napi_release_threadsafe_function(node_impl->threadsafe_load_from_file, napi_tsfn_abort);
+			status = napi_release_threadsafe_function(node_impl->threadsafe_load_from_file, napi_tsfn_abort);
 
 			node_loader_impl_exception(env, status);
 		}
 
 		/* Safe load from memory */
 		{
-			napi_status status = napi_release_threadsafe_function(node_impl->threadsafe_load_from_memory, napi_tsfn_abort);
+			status = napi_release_threadsafe_function(node_impl->threadsafe_load_from_memory, napi_tsfn_abort);
 
 			node_loader_impl_exception(env, status);
 		}
 
 		/* Safe clear */
 		{
-			napi_status status = napi_release_threadsafe_function(node_impl->threadsafe_clear, napi_tsfn_abort);
+			status = napi_release_threadsafe_function(node_impl->threadsafe_clear, napi_tsfn_abort);
 
 			node_loader_impl_exception(env, status);
 		}
 
 		/* Safe discover */
 		{
-			napi_status status = napi_release_threadsafe_function(node_impl->threadsafe_discover, napi_tsfn_abort);
+			status = napi_release_threadsafe_function(node_impl->threadsafe_discover, napi_tsfn_abort);
 
 			node_loader_impl_exception(env, status);
 		}
 
 		/* Safe function call */
 		{
-			napi_status status = napi_release_threadsafe_function(node_impl->threadsafe_func_call, napi_tsfn_abort);
+			status = napi_release_threadsafe_function(node_impl->threadsafe_func_call, napi_tsfn_abort);
 
 			node_loader_impl_exception(env, status);
 		}
 
 		/* Safe function await */
 		{
-			napi_status status = napi_release_threadsafe_function(node_impl->threadsafe_func_await, napi_tsfn_abort);
+			status = napi_release_threadsafe_function(node_impl->threadsafe_func_await, napi_tsfn_abort);
 
 			node_loader_impl_exception(env, status);
 		}
 
 		/* Safe function destroy */
 		{
-			napi_status status = napi_release_threadsafe_function(node_impl->threadsafe_func_destroy, napi_tsfn_abort);
+			status = napi_release_threadsafe_function(node_impl->threadsafe_func_destroy, napi_tsfn_abort);
 
 			node_loader_impl_exception(env, status);
 		}
 
 		/* Safe future await */
 		{
-			napi_status status = napi_release_threadsafe_function(node_impl->threadsafe_future_await, napi_tsfn_abort);
+			status = napi_release_threadsafe_function(node_impl->threadsafe_future_await, napi_tsfn_abort);
 
 			node_loader_impl_exception(env, status);
 		}
 
 		/* Safe future delete */
 		{
-			napi_status status = napi_release_threadsafe_function(node_impl->threadsafe_future_delete, napi_tsfn_abort);
+			status = napi_release_threadsafe_function(node_impl->threadsafe_future_delete, napi_tsfn_abort);
 
 			node_loader_impl_exception(env, status);
 		}
 
 		/* Safe destroy */
 		{
-			napi_status status = napi_release_threadsafe_function(node_impl->threadsafe_destroy, napi_tsfn_abort);
+			status = napi_release_threadsafe_function(node_impl->threadsafe_destroy, napi_tsfn_abort);
 
 			node_loader_impl_exception(env, status);
 		}

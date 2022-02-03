@@ -122,27 +122,21 @@ add_test(NAME ${target}
 # Define dependencies
 #
 
-include(GeneratorExpressions)
-
-cmake_expand_generator_expressions(DEPENDENCIES
-	$<$<BOOL:${OPTION_BUILD_LOADERS_NODE}>:node_loader>
-	$<$<BOOL:${OPTION_BUILD_LOADERS_PY}>:py_loader>
-	$<$<BOOL:${OPTION_BUILD_LOADERS_RB}>:rb_loader>
+add_loader_dependencies(${target}
+	node_loader
+	py_loader
+	rb_loader
 )
-
-if(DEPENDENCIES)
-	add_dependencies(${target} ${DEPENDENCIES})
-endif()
 
 #
 # Configure test data
 #
 
 if(MSVC)
-	configure_file(data/metacall_load_from_configuration_py_test_a.json.in ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/metacall_load_from_configuration_py_test_a.json)
-	configure_file(data/metacall_load_from_configuration_py_test_b.json.in ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/metacall_load_from_configuration_py_test_b.json)
-	configure_file(data/metacall_load_from_configuration_rb_test.json.in ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/metacall_load_from_configuration_rb_test.json)
-	configure_file(data/metacall_load_from_configuration_node_test.json.in ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/metacall_load_from_configuration_node_test.json)
+	configure_file(data/metacall_load_from_configuration_py_test_a.json.in ${PROJECT_OUTPUT_DIR}/metacall_load_from_configuration_py_test_a.json)
+	configure_file(data/metacall_load_from_configuration_py_test_b.json.in ${PROJECT_OUTPUT_DIR}/metacall_load_from_configuration_py_test_b.json)
+	configure_file(data/metacall_load_from_configuration_rb_test.json.in ${PROJECT_OUTPUT_DIR}/metacall_load_from_configuration_rb_test.json)
+	configure_file(data/metacall_load_from_configuration_node_test.json.in ${PROJECT_OUTPUT_DIR}/metacall_load_from_configuration_node_test.json)
 endif()
 
 configure_file(data/metacall_load_from_configuration_py_test_a.json.in ${CMAKE_CURRENT_BINARY_DIR}/metacall_load_from_configuration_py_test_a.json)

@@ -2,7 +2,7 @@
  *	Environment Library by Parra Studios
  *	A cross-platform library for supporting platform specific environment features.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -73,6 +73,15 @@ const char *environment_variable_get(const char *name, const char *default_value
 	}
 
 	return default_value;
+}
+
+int environment_variable_set(const char *name, const char *value_string)
+{
+#if defined(_WIN32)
+	return _putenv_s(name, value_string);
+#else
+	return setenv(name, value_string, 1);
+#endif
 }
 
 void environment_variable_destroy(char *variable)

@@ -2,7 +2,7 @@
  *	Reflect Library by Parra Studios
  *	A library for provide reflection and metadata representation.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -73,6 +73,18 @@ REFLECT_API value value_alloc(size_t bytes);
 *    Pointer to value if success, null otherwhise
 */
 REFLECT_API value value_create(const void *data, size_t bytes);
+
+/**
+*  @brief
+*    Check if the value @v is valid or the memory is corrupted
+*
+*  @param[in] v
+*    Reference of value to be checked
+*
+*  @return
+*    Zero if the value is valid, null otherwhise
+*/
+REFLECT_API int value_validate(value v);
 
 /**
 *  @brief

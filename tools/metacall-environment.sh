@@ -88,7 +88,6 @@ sub_python(){
 	echo "configure python"
 	cd $ROOT_DIR
 	$SUDO_CMD apt-get $APT_CACHE_CMD -y --no-install-recommends install python3 python3-dev python3-pip
-	$SUDO_CMD pip3 install django
 	$SUDO_CMD pip3 install requests
 	$SUDO_CMD pip3 install setuptools
 	$SUDO_CMD pip3 install wheel
@@ -271,8 +270,8 @@ sub_nodejs(){
 	cd $ROOT_DIR
 	$SUDO_CMD apt-get update
 
-	# Install python 2.7 to build node (gyp)
-	$SUDO_CMD apt-get $APT_CACHE_CMD -y --no-install-recommends install python g++ make nodejs curl
+	# Install python to build node (gyp)
+	$SUDO_CMD apt-get $APT_CACHE_CMD -y --no-install-recommends install python3 g++ make nodejs curl
 
 	# Install and update npm and node-gyp
 	curl -L https://npmjs.org/install.sh | $SUDO_CMD sh
@@ -318,7 +317,7 @@ sub_metacall(){
 	# TODO: Update this or deprecate it
 	echo "configure metacall"
 	cd $ROOT_DIR
-	git clone --recursive https://github.com/metacall/core.git
+	git clone https://github.com/metacall/core.git
 	mkdir core/build && cd core/build
 
 	if [ $INSTALL_NETCORE = 1 ]; then
@@ -326,7 +325,7 @@ sub_metacall(){
 	elif [ INSTALL_NETCORE2 = 1 ]; then
 		NETCORE_VERSION=2.2.8
 	elif [ INSTALL_NETCORE5 = 1 ]; then
-		NETCORE_VERSION=5.0.11
+		NETCORE_VERSION=5.0.13
 	else
 		NETCORE_VERSION=0
 	fi

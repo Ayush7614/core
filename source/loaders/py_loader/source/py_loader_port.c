@@ -2,7 +2,7 @@
  *	Loader Library by Parra Studios
  *	A plugin for loading python code at run-time into a process.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -29,17 +29,17 @@
 	#error "The Python Loader Port must be defined"
 #endif
 
-static PyObject *py_loader_port_none()
+static PyObject *py_loader_port_none(void)
 {
 	Py_RETURN_NONE;
 }
 
-static PyObject *py_loader_port_false()
+static PyObject *py_loader_port_false(void)
 {
 	Py_RETURN_FALSE;
 }
 
-static PyObject *py_loader_port_true()
+static PyObject *py_loader_port_true(void)
 {
 	Py_RETURN_TRUE;
 }
@@ -465,6 +465,130 @@ static PyObject *py_loader_port_invoke(PyObject *self, PyObject *var_args)
 		{
 			ret = metacallv_s(name_str, metacall_null_args, 0);
 		}
+
+		PyEval_RestoreThread(thread_state);
+
+		if (ret == NULL)
+		{
+			result = py_loader_port_none();
+			goto clear;
+		}
+
+		result = py_loader_impl_value_to_capi(impl, value_type_id(ret), ret);
+
+		value_type_destroy(ret);
+
+		if (result == NULL)
+		{
+			result = py_loader_port_none();
+			goto clear;
+		}
+	}
+
+clear:
+	if (value_args != NULL)
+	{
+		for (args_count = 0; args_count < args_size; ++args_count)
+		{
+			value_type_destroy(value_args[args_count]);
+		}
+
+		free(value_args);
+	}
+
+	return result;
+}
+
+static PyObject *py_loader_port_await(PyObject *self, PyObject *var_args)
+{
+	PyObject *name, *result = NULL;
+	char *name_str;
+	Py_ssize_t name_length = 0;
+	void **value_args = NULL;
+	size_t args_size = 0, args_count;
+	Py_ssize_t var_args_size;
+	loader_impl impl;
+
+	(void)self;
+
+	/* Obtain Python loader implementation */
+	impl = loader_get_impl("py");
+
+	if (impl == NULL)
+	{
+		PyErr_SetString(PyExc_ValueError, "Invalid Python loader instance, MetaCall Port must be used from MetaCall CLI");
+		return py_loader_port_none();
+	}
+
+	var_args_size = PyTuple_Size(var_args);
+
+	if (var_args_size == 0)
+	{
+		PyErr_SetString(PyExc_TypeError, "Invalid number of arguments, use it like: metacall('function_name', 'asd', 123, [7, 4]);");
+		return py_loader_port_none();
+	}
+
+	name = PyTuple_GetItem(var_args, 0);
+
+#if PY_MAJOR_VERSION == 2
+	{
+		if (!(PyString_Check(name) && PyString_AsStringAndSize(name, &name_str, &name_length) != -1))
+		{
+			name_str = NULL;
+		}
+	}
+#elif PY_MAJOR_VERSION == 3
+	{
+		name_str = PyUnicode_Check(name) ? (char *)PyUnicode_AsUTF8AndSize(name, &name_length) : NULL;
+	}
+#endif
+
+	if (name_str == NULL)
+	{
+		PyErr_SetString(PyExc_TypeError, "Invalid function name string conversion, first parameter must be a string");
+		return py_loader_port_none();
+	}
+
+	/* Get variable arguments length */
+	args_size = var_args_size - 1;
+
+	/* Allocate arguments */
+	if (args_size != 0)
+	{
+		value_args = (void **)malloc(args_size * sizeof(void *));
+
+		if (value_args == NULL)
+		{
+			PyErr_SetString(PyExc_ValueError, "Invalid argument allocation");
+			return py_loader_port_none();
+		}
+
+		/* Parse variable arguments */
+		for (args_count = 0; args_count < args_size; ++args_count)
+		{
+			PyObject *element = PyTuple_GetItem(var_args, args_count + 1);
+
+			value_args[args_count] = py_loader_impl_capi_to_value(impl, element, py_loader_impl_capi_to_value_type(impl, element));
+		}
+	}
+
+	/* Execute the await */
+	{
+		PyThreadState *thread_state = PyEval_SaveThread();
+
+		void *ret;
+
+		/* TODO: */
+		/*
+		if (value_args != NULL)
+		{
+			ret = metacallv_s(name_str, value_args, args_size);
+		}
+		else
+		{
+			ret = metacallv_s(name_str, metacall_null_args, 0);
+		}
+		*/
 
 		PyEval_RestoreThread(thread_state);
 

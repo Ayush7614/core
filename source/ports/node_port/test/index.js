@@ -2,7 +2,7 @@
  *	MetaCall NodeJS Port by Parra Studios
  *	A complete infrastructure for supporting multiple language bindings in MetaCall.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -107,6 +107,26 @@ describe('metacall', () => {
 				assert.strictEqual(metacall('say', 'Hello, ', 'world!'), 0);
 			});
 		}
+		// C tests are conditional (in order to pass CI/CD)
+		if (process.env['OPTION_BUILD_LOADERS_C']) {
+			// TODO: This is not working yet due to NodeJS nature, the signature
+			// of the callback is not known so it fails, review this
+			/*
+			it('metacall_load_from_file (c)', () => {
+				assert.strictEqual(metacall_load_from_file('c', [ 'ffi.c', 'ffi.ld' ]), undefined);
+
+				const script = metacall_handle('c', 'ffi.c');
+				assert.notStrictEqual(script, undefined);
+				assert.strictEqual(script.name, 'ffi.c');
+
+				assert.strictEqual(metacall('c_callback', (a, b) => {
+					assert.strictEqual(a, 3);
+					assert.strictEqual(b, 4);
+					return a + b;
+				}), 7);
+			});
+			*/
+		}
 		it('require (mock)', () => {
 			const asd = require('./asd.mock');
 			assert.notStrictEqual(asd, undefined);
@@ -118,6 +138,11 @@ describe('metacall', () => {
 			assert.strictEqual(asd.two_doubles(4.4, 5.5), 3.1416);
 			assert.strictEqual(asd.three_str('a', 'b', 'c'), 'Hello World');
 			assert.strictEqual(asd.mixed_args('a', 3, 4, 3.4, 'NOT IMPLEMENTED'), 65);
+		});
+		it('require (ts)', () => {
+			const { isExported } = require('./badrequire');
+			assert.notStrictEqual(isExported, undefined);
+			assert.strictEqual(isExported(), true);
 		});
 		it('require (py)', () => {
 			const example = require('./example.py');

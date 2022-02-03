@@ -2,7 +2,7 @@
  *	Loader Library by Parra Studios
  *	A library for loading executable code at run-time into a process.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -73,6 +73,8 @@ LOADER_API const char *loader_impl_handle_id(void *handle);
 LOADER_API value loader_impl_handle_export(void *handle);
 
 LOADER_API context loader_impl_handle_context(void *handle);
+
+LOADER_API int loader_impl_handle_validate(void *handle);
 
 LOADER_API value loader_impl_metadata(loader_impl impl);
 

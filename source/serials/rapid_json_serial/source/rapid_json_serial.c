@@ -1,6 +1,6 @@
 /*
  *	Serial Library by Parra Studios
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	A cross-platform library for managing multiple serialization and deserialization formats.
  *
@@ -15,7 +15,7 @@
 
 /* -- Methods -- */
 
-serial_interface rapid_json_serial_impl_interface_singleton()
+serial_interface rapid_json_serial_impl_interface_singleton(void)
 {
 	static struct serial_interface_type interface_instance_rapid_json = {
 		&rapid_json_serial_impl_extension,
@@ -28,11 +28,11 @@ serial_interface rapid_json_serial_impl_interface_singleton()
 	return &interface_instance_rapid_json;
 }
 
-const char *rapid_json_serial_print_info()
+const char *rapid_json_serial_print_info(void)
 {
 	static const char rapid_json_serial_info[] =
 		"Rapid JSON Serial Plugin " METACALL_VERSION "\n"
-		"Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
+		"Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
 
 #ifdef RAPID_JSON_SERIAL_STATIC_DEFINE
 		"Compiled as static library type\n"

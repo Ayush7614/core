@@ -1,6 +1,6 @@
 /*
  *	Logger Library by Parra Studios
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	A generic logger library providing application execution reports.
  *
@@ -40,7 +40,7 @@ typedef struct log_policy_stream_nginx_ctor_type *log_policy_stream_nginx_ctor;
 struct log_policy_stream_nginx_ctor_type
 {
 	ngx_log_t *ngx_log_ptr;
-	void (*ngx_error_ptr)();
+	void (*ngx_error_ptr)(void);
 	uint16_t ngx_log_level;
 };
 

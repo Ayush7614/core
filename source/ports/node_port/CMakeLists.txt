@@ -30,12 +30,6 @@ set(source_group "Source Files")
 source_group_by_path(${source_path}  "\\\\.js$"
 	${source_group} ${sources})
 
-if(MSVC)
-	set(NODE_PORT_OUTPUT_PATH "${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
-else()
-	set(NODE_PORT_OUTPUT_PATH "${PROJECT_BINARY_DIR}")
-endif()
-
 if(NOT OPTION_BUILD_GUIX)
 	find_package(NPM)
 
@@ -46,17 +40,17 @@ if(NOT OPTION_BUILD_GUIX)
 
 	add_custom_target(${target} ALL
 		COMMAND ${NPM_EXECUTABLE} install --ignore-scripts
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/index.js ${NODE_PORT_OUTPUT_PATH}/node_modules/metacall/index.js
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/package.json ${NODE_PORT_OUTPUT_PATH}/node_modules/metacall/package.json
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/package-lock.json ${NODE_PORT_OUTPUT_PATH}/node_modules/metacall/package-lock.json
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/index.js ${PROJECT_OUTPUT_DIR}/node_modules/metacall/index.js
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/package.json ${PROJECT_OUTPUT_DIR}/node_modules/metacall/package.json
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/package-lock.json ${PROJECT_OUTPUT_DIR}/node_modules/metacall/package-lock.json
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		SOURCES ${sources}
 	)
 else()
 	add_custom_target(${target} ALL
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/index.js ${NODE_PORT_OUTPUT_PATH}/node_modules/metacall/index.js
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/package.json ${NODE_PORT_OUTPUT_PATH}/node_modules/metacall/package.json
-		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/package-lock.json ${NODE_PORT_OUTPUT_PATH}/node_modules/metacall/package-lock.json
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/index.js ${PROJECT_OUTPUT_DIR}/node_modules/metacall/index.js
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/package.json ${PROJECT_OUTPUT_DIR}/node_modules/metacall/package.json
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/package-lock.json ${PROJECT_OUTPUT_DIR}/node_modules/metacall/package-lock.json
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		SOURCES ${sources}
 	)
@@ -87,7 +81,7 @@ install(FILES
 #
 
 # Check if loaders are enabled
-if(NOT OPTION_BUILD_CLI OR NOT OPTION_BUILD_LOADERS OR NOT OPTION_BUILD_LOADERS_NODE OR NOT OPTION_BUILD_LOADERS_PY OR NOT OPTION_BUILD_LOADERS_RB OR NOT OPTION_BUILD_SCRIPTS OR NOT OPTION_BUILD_SCRIPTS_PY OR NOT OPTION_BUILD_SCRIPTS_RB)
+if(NOT OPTION_BUILD_CLI OR NOT OPTION_BUILD_LOADERS OR NOT OPTION_BUILD_LOADERS_NODE OR NOT OPTION_BUILD_LOADERS_PY OR NOT OPTION_BUILD_LOADERS_RB OR NOT OPTION_BUILD_LOADERS_TS OR NOT OPTION_BUILD_SCRIPTS OR NOT OPTION_BUILD_SCRIPTS_PY OR NOT OPTION_BUILD_SCRIPTS_RB)
 	return()
 endif()
 
@@ -124,10 +118,16 @@ if(OPTION_BUILD_LOADERS_COB)
 	set(TESTS_ENVIRONMENT_VARIABLES_COB "OPTION_BUILD_LOADERS_COB=1")
 endif()
 
+# Enable c test if it is built
+if(OPTION_BUILD_LOADERS_C)
+	set(TESTS_ENVIRONMENT_VARIABLES_C "OPTION_BUILD_LOADERS_C=1")
+endif()
+
 test_environment_variables(${target}
 	""
 	${TESTS_ENVIRONMENT_VARIABLES}
 	${TESTS_ENVIRONMENT_VARIABLES_COB}
+	${TESTS_ENVIRONMENT_VARIABLES_C}
 )
 
 # TODO: Until we find a better way to do this, we should disable it
@@ -136,7 +136,7 @@ return()
 # Detect exec with MetaCall CLI when this is being run with node
 set(NodeJS_EXECUTABLE_ONLY ON)
 
-find_package(NodeJS 12)
+find_package(NodeJS)
 
 if(NOT NodeJS_FOUND)
 	message(STATUS "NodeJS libraries not found")

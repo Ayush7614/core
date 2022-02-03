@@ -75,6 +75,7 @@ Use the [installer](https://github.com/metacall/install) and try [some examples]
     - [6.1 Build Options](#61-build-options)
     - [6.2 Coverage](#62-coverage)
     - [6.3 Debugging](#63-debugging)
+    - [6.4 Build on Cloud - Gitpod](#64-build-on-cloud---gitpod)
   - [7. Platform Support](#7-platform-support)
     - [7.1 Docker Support](#71-docker-support)
     - [7.1.1 Docker Development](#711-docker-development)
@@ -97,27 +98,27 @@ This section describes all programming languages that **METACALL** allows to loa
 
 - Currently supported languages and run-times:
 
-| Language                                                           | Runtime                                                                                                        |             Version             | Tag  |
-|--------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|:-------------------------------:|:----:|
-| [Python](https://www.python.org/)                                  | [Python C API](https://docs.python.org/3/c-api/intro.html)                                                     |        **>= 3.2 <= 3.9**        |  py  |
-| [NodeJS](https://nodejs.org/)                                      | [N API](https://nodejs.org/api/n-api.html)                                                                     |    **>= 10.22.0 <= 15.20.0**    | node |
-| [TypeScript](https://www.typescriptlang.org/)                      | [TypeScript Language Service API](https://github.com/microsoft/TypeScript/wiki/Using-the-Language-Service-API) |            **4.2.3**            |  ts  |
-| [JavaScript](https://developer.mozilla.org/bm/docs/Web/JavaScript) | [V8](https://v8.dev/)                                                                                          |           **5.1.117**           |  js  |
-| [C#](https://dotnet.microsoft.com/)                                | [NetCore](https://github.com/dotnet/docs/blob/master/docs/core/tutorials/netcore-hosting.md)                   | **>= 1.0.0-preview2 <= 5.0.11** |  cs  |
-| [Ruby](https://ruby-lang.org/)                                     | [Ruby C API](https://silverhammermba.github.io/emberb/c/)                                                      |        **>= 2.1 <= 2.7**        |  rb  |
-| [Cobol](https://sourceforge.net/projects/open-cobol/)              | [GNU/Cobol](https://open-cobol.sourceforge.io/doxygen/gnucobol-2/libcob_8h.html)                               |          **>= 1.1.0**           | cob  |
-| [File](/source/loaders/file_loader)                                | **∅**                                                                                                          |            **0.1.0**            | file |
-| [Mock](/source/loaders/mock_loader)                                | **∅**                                                                                                          |            **0.1.0**            | mock |
-| [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call)         | [cURL](https://curl.haxx.se/)                                                                                  |          **>=7.64.0**           | rpc  |
-| [Java](https://www.java.com)                                       | [JVM](https://en.wikipedia.org/wiki/Java_virtual_machine)                                                      |            **>=11**             | java |
-| [WebAssembly](https://webassembly.org/)                            | [Wasmtime](https://github.com/bytecodealliance/wasmtime)                                                       |           **>= 0.27**           | wasm |
-
+| Language                                                           | Runtime                                                                                                                                               |                 Version                 | Tag  |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------: | :--: |
+| [Python](https://www.python.org/)                                  | [Python C API](https://docs.python.org/3/c-api/intro.html)                                                                                            |            **>= 3.2 <= 3.9**            |  py  |
+| [NodeJS](https://nodejs.org/)                                      | [N API](https://nodejs.org/api/n-api.html)                                                                                                            |        **>= 10.22.0 <= 15.20.0**        | node |
+| [TypeScript](https://www.typescriptlang.org/)                      | [TypeScript Language Service API](https://github.com/microsoft/TypeScript/wiki/Using-the-Language-Service-API)                                        |                **4.2.3**                |  ts  |
+| [JavaScript](https://developer.mozilla.org/bm/docs/Web/JavaScript) | [V8](https://v8.dev/)                                                                                                                                 |               **5.1.117**               |  js  |
+| [C#](https://dotnet.microsoft.com/)                                | [NetCore](https://github.com/dotnet/docs/blob/master/docs/core/tutorials/netcore-hosting.md)                                                          |     **>= 1.0.0-preview2 <= 5.0.13**     |  cs  |
+| [Ruby](https://ruby-lang.org/)                                     | [Ruby C API](https://silverhammermba.github.io/emberb/c/)                                                                                             |            **>= 2.1 <= 2.7**            |  rb  |
+| [Cobol](https://sourceforge.net/projects/open-cobol/)              | [GNU/Cobol](https://open-cobol.sourceforge.io/doxygen/gnucobol-2/libcob_8h.html)                                                                      |              **>= 1.1.0**               | cob  |
+| [File](/source/loaders/file_loader)                                | **∅**                                                                                                                                                 |                **0.1.0**                | file |
+| [Mock](/source/loaders/mock_loader)                                | **∅**                                                                                                                                                 |                **0.1.0**                | mock |
+| [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call)         | [cURL](https://curl.haxx.se/)                                                                                                                         |              **>=7.64.0**               | rpc  |
+| [Java](https://www.java.com)                                       | [JVM](https://en.wikipedia.org/wiki/Java_virtual_machine)                                                                                             |                **>=11**                 | java |
+| [WebAssembly](https://webassembly.org/)                            | [Wasmtime](https://github.com/bytecodealliance/wasmtime)                                                                                              |               **>= 0.27**               | wasm |
+| [C](https://en.wikipedia.org/wiki/C_(programming_language))        | [libclang](https://clang.llvm.org/doxygen/group__CINDEX.html) - [Tiny C Compiler](https://bellard.org/tcc/) - [libffi](http://sourceware.org/libffi/) | **>=12** - **>=2021-10-30** - **>=3.2** |  c   |
 
 - Languages and run-times under construction:
 
 | Language                                                                      | Runtime                                                                                                | Tag  |
 | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | :--: |
-| [C/C++](http://www.cplusplus.com/)                                            | [Clang](https://clang.llvm.org/) - [LLVM](https://llvm.org/) - [libffi](http://sourceware.org/libffi/) |  c   |
+| [C++](http://www.cplusplus.com/)                                              | [Clang](https://clang.llvm.org/) - [LLVM](https://llvm.org/)                                           | cpp  |
 | [PHP](https://php.net/)                                                       | [Zend](https://www.php.net/manual/en/internals2.ze1.zendapi.php)                                       | php  |
 | [Go](https://golang.org/)                                                     | Go Runtime                                                                                             |  go  |
 | [Haskell](https://www.haskell.org/)                                           | [Haskell FFI](https://wiki.haskell.org/GHC/Using_the_FFI)                                              |  hs  |
@@ -146,6 +147,7 @@ Ports are the frontends to the **METACALL C API** from other languages. They all
 | [D](https://dlang.org/)                                            | [DMD](https://wiki.dlang.org/DMD)                          |        **2.x**        |
 | [Rust](https://www.rust-lang.org/)                                 | **∅**                                                      |     **>= 1.47.0**     |
 | [Scala](https://www.scala-lang.org/)                               | [JVM](https://en.wikipedia.org/wiki/Java_virtual_machine)  |     **>= 2.13.x**     |
+| [Nim](https://nim-lang.org/)                                       | **∅**                                                      |     **>= 1.4.2**      |
 
 ## 3. Use Cases
 
@@ -614,9 +616,12 @@ In order to end this section, here's a list of ideas that are not completely imp
 Follow these steps to build and install **METACALL** manually.
 
 ``` sh
-git clone --recursive https://github.com/metacall/core.git
+git clone https://github.com/metacall/core.git
 mkdir core/build && cd core/build
 cmake ..
+# Unix (Linux and MacOs)
+sudo HOME="$HOME" cmake --build . --target install
+# Windows (or when installing to a path with permissions)
 cmake --build . --target install
 ```
 
@@ -721,6 +726,18 @@ ctest
 ```
 
 For running other Valgrind's tools like helgrind or similar, I recommend running them manually. Just run one test with `ctest -VV -R metacall-node-port-test`, copy the environment variables, and configure the flags by yourself.
+
+
+### 6.4 Build on Cloud - Gitpod
+
+Instead of configuring a local setup, you can also use [Gitpod](https://www.gitpod.io/), an automated cloud dev environment.
+
+Click the button below. A workspace with all required environments will be created.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/metacall/core)
+
+> To use it on your forked repo, edit the 'Open in Gitpod' button url to `https://gitpod.io/#https://github.com/<your-github-username>/core`
+
 
 ## 7. Platform Support
 
@@ -842,7 +859,7 @@ Where `script.js` is a script contained in host folder `$HOME/metacall` that wil
 
 **METACALL** is licensed under **[Apache License Version 2.0](/LICENSE)**.
 
->Copyright (C) 2016 - 2020 Vicente Eduardo Ferrer Garcia <<vic798@gmail.com>>
+>Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <<vic798@gmail.com>>
 >
 >Licensed under the Apache License, Version 2.0 (the "License");
 >you may not use this file except in compliance with the License.

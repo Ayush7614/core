@@ -31,6 +31,14 @@
 # Rust_GDB_EXECUTABLE - Rust GDB debugger executable path
 # Rust_LLDB_EXECUTABLE - Rust LLDB debugger executable path
 
+# Options
+#
+# Rust_CMAKE_DEBUG - Print the debug information and all constants values
+
+# Example for fixing the toolchain
+#
+# find_package(Rust COMPONENTS nightly-2021-10-09)
+
 option(Rust_CMAKE_DEBUG "Show full output of the Rust related commands for debugging." OFF)
 
 if(WIN32)
@@ -94,21 +102,6 @@ if(Rust_RUSTUP_EXECUTABLE AND Rust_FIND_COMPONENTS)
 				message(FATAL_ERROR "${Rust_OUTPUT}")
 			endif()
 		endif()
-
-		set(Rust_TOOLCHAIN_COMPONENT_LIST
-			cargo
-			clippy
-			llvm-tools-preview
-			rls
-			rust-analysis
-			rust-analyzer-preview
-			rust-docs
-			rust-std
-			rustc
-			rustc-dev
-			rustfmt
-			rust-src
-		)
 
 		foreach(Rust_TOOLCHAIN_COMPONENT ${Rust_TOOLCHAIN_COMPONENT_LIST})
 			execute_process(

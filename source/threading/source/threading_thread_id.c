@@ -2,7 +2,7 @@
  *	Abstract Data Type Library by Parra Studios
  *	A abstract data type library providing generic containers.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -43,8 +43,10 @@
 		#include <share.h>
 	#endif
 #elif defined(__linux__) || \
-	((defined(__APPLE__) && defined(__MACH__)) || defined(__MACOSX__) && (!defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12))
-	#define _GNU_SOURCE
+	(((defined(__APPLE__) && defined(__MACH__)) || defined(__MACOSX__)) && (!defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12))
+	#ifndef _GNU_SOURCE
+		#define _GNU_SOURCE
+	#endif
 	#include <unistd.h>
 	#include <sys/syscall.h>
 	#include <sys/types.h>
@@ -60,7 +62,7 @@
 
 /* -- Methods -- */
 
-uint64_t thread_id_get_current()
+uint64_t thread_id_get_current(void)
 {
 #if defined(_WIN32)
 	return (uint64_t)GetCurrentThreadId();

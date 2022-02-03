@@ -2,7 +2,7 @@
  *	Loader Library by Parra Studios
  *	A plugin for loading LLVM code at run-time into a process.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -32,9 +32,13 @@
 #include <log/log.h>
 
 /* Disable warnings from LLVM */
-#if defined(_MSC_VER) || defined(__clang__)
+#if defined(_MSC_VER)
 	#pragma warning(push)
 // TODO
+#elif defined(__clang__)
+	#pragma clang diagnostic push
+	#pragma clang diagnostic ignored "-Wunused-parameter"
+	#pragma clang diagnostic ignored "-Wredundant-decls"
 #elif defined(__GNUC__)
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -59,8 +63,10 @@
 #include <llvm/Transforms/Scalar.h>
 
 /* Disable warnings from LLVM */
-#if defined(_MSC_VER) || defined(__clang__)
+#if defined(_MSC_VER)
 	#pragma warning(pop)
+#elif defined(__clang__)
+	#pragma clang diagnostic pop
 #elif defined(__GNUC__)
 	#pragma GCC diagnostic pop
 #endif

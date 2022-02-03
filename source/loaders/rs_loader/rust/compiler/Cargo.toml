@@ -1,0 +1,13 @@
+[package]
+name = "compiler"
+version = "0.1.0"
+edition = "2021"
+
+[package.metadata.rust-analyzer]
+rustc_private = true
+
+[dependencies]
+dlopen = "0.1.8"
+libffi = "2.0.0"
+cargo_toml = "0.10.3"
+api = { path = "../api" }

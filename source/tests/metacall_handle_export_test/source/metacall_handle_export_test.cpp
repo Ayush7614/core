@@ -2,7 +2,7 @@
  *	MetaCall Library by Parra Studios
  *	A library for providing a foreign function interface calls.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -103,6 +103,20 @@ TEST_F(metacall_handle_export_test, DefaultConstructor)
 		metacall_value_destroy(v);
 	}
 #endif /* OPTION_BUILD_LOADERS_NODE */
+
+	/* Test bad handle allocation */
+	{
+		struct
+		{
+			int random;
+			int broken;
+			int handle;
+			int yeet;
+			char padding[600];
+		} broken_handle = { 0, 0, 0, 0, { 0 } };
+
+		EXPECT_EQ((void *)NULL, (void *)metacall_handle_export((void *)&broken_handle));
+	}
 
 	/* Print inspect information */
 	{

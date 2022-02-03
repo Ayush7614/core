@@ -1,6 +1,6 @@
 
 # Check if this loader is enabled
-if(NOT OPTION_BUILD_LOADERS OR NOT OPTION_BUILD_LOADERS_PY OR NOT OPTION_BUILD_SCRIPTS OR NOT OPTION_BUILD_SCRIPTS_PY)
+if(NOT OPTION_BUILD_LOADERS OR NOT OPTION_BUILD_LOADERS_PY OR NOT OPTION_BUILD_LOADERS_NODE OR NOT OPTION_BUILD_SCRIPTS OR NOT OPTION_BUILD_SCRIPTS_PY OR NOT OPTION_BUILD_SCRIPTS_NODE)
 	return()
 endif()
 
@@ -96,6 +96,9 @@ target_link_libraries(${target}
 target_compile_definitions(${target}
 	PRIVATE
 	${DEFAULT_COMPILE_DEFINITIONS}
+
+	# Configuration path
+	METACALL_TEST_CONFIG_PATH="${PROJECT_OUTPUT_DIR}/scripts/duplicated-in-subfolder-config/metacall.json"
 )
 
 #
@@ -130,6 +133,7 @@ add_test(NAME ${target}
 
 add_dependencies(${target}
 	py_loader
+	node_loader
 )
 
 #

@@ -2,7 +2,7 @@
  *	Loader Library by Parra Studios
  *	A plugin for loading ruby code at run-time into a process.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@
 
 #ifndef RB_LOADER_IMPL_PARSER_H
 #define RB_LOADER_IMPL_PARSER_H 1
-
-#include <rb_loader/rb_loader_api.h>
 
 #include <adt/adt_set.h>
 
@@ -50,11 +48,11 @@ typedef struct rb_function_parser_type
 
 } * rb_function_parser;
 
-RB_LOADER_API int rb_loader_impl_key_parse(const char *source, set function_map);
+int rb_loader_impl_key_parse(const char *source, set function_map);
 
-RB_LOADER_API void rb_loader_impl_key_print(set function_map);
+void rb_loader_impl_key_print(set function_map);
 
-RB_LOADER_API int rb_loader_impl_key_clear(set function_map);
+int rb_loader_impl_key_clear(set function_map);
 
 #ifdef __cplusplus
 }

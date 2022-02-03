@@ -2,7 +2,7 @@
  *	Loader Library by Parra Studios
  *	A plugin for loading net code at run-time into a process.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -20,8 +20,9 @@
 
 #ifndef _NETCORE_WIN_H_
 #define _NETCORE_WIN_H_
-#include "defs.h"
-#include "netcore.h"
+
+#include <cs_loader/defs.h>
+#include <cs_loader/netcore.h>
 
 typedef class host_environment;
 typedef class ICLRRuntimeHost2;

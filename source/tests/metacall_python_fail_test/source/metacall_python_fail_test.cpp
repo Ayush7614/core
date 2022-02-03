@@ -2,7 +2,7 @@
  *	MetaCall Library by Parra Studios
  *	A library for providing a foreign function interface calls.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -62,6 +62,13 @@ TEST_F(metacall_python_fail_test, DefaultConstructor)
 
 		// This must fail
 		EXPECT_EQ((int)1, (int)metacall_load_from_memory("py", buffer_fail, sizeof(buffer_fail), NULL));
+
+		const char *py_scripts_non_installed[] = {
+			"badimport.py"
+		};
+
+		// Print traceback
+		EXPECT_EQ((int)1, (int)metacall_load_from_file("py", py_scripts_non_installed, sizeof(py_scripts_non_installed) / sizeof(py_scripts_non_installed[0]), NULL));
 	}
 #endif /* OPTION_BUILD_LOADERS_PY */
 

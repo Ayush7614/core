@@ -385,7 +385,7 @@ if(NOT NodeJS_LIBRARY)
 
 	# Compile node as a shared library if needed
 	if(NOT EXISTS "${NodeJS_COMPILE_PATH}")
-		if(WIN32)
+		if(WIN32 AND MSVC)
 			if(NOT EXISTS "${NodeJS_COMPILE_PATH}/node.dll" AND NOT EXISTS "${NodeJS_COMPILE_PATH}/libnode.dll")
 				message(STATUS "Build NodeJS shared library")
 
@@ -441,7 +441,7 @@ if(NOT NodeJS_LIBRARY)
 				endif()
 
 				# Copy library to MetaCall output path
-				file(COPY ${NodeJS_COMPILE_PATH}/${NodeJS_LIBRARY_NAME} DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+				file(COPY ${NodeJS_COMPILE_PATH}/${NodeJS_LIBRARY_NAME} DESTINATION ${PROJECT_OUTPUT_DIR})
 
 				message(STATUS "Install NodeJS shared library")
 			endif()
@@ -461,11 +461,20 @@ if(NOT NodeJS_LIBRARY)
 				set(ICU_URL "https://github.com/unicode-org/icu/releases/download/release-64-2/icu4c-64_2-src.zip")
 			endif()
 
-			if("${CMAKE_BUILD_TYPE}" EQUAL "Debug")
-				execute_process(COMMAND sh -c "./configure --with-icu-source=${ICU_URL} --shared --debug" WORKING_DIRECTORY "${NodeJS_OUTPUT_PATH}")
+			if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+				set(ICU_DEBUG --debug)
 			else()
-				execute_process(COMMAND sh -c "./configure --with-icu-source=${ICU_URL} --shared" WORKING_DIRECTORY "${NodeJS_OUTPUT_PATH}")
+				set(ICU_DEBUG)
 			endif()
+
+			# Workaround for OpenSSL bug: https://github.com/metacall/core/issues/223
+			if(APPLE)
+				set(ICU_ENV_VAR ${CMAKE_COMMAND} -E env PYTHONHTTPSVERIFY=0)
+			else()
+				set(ICU_ENV_VAR)
+			endif()
+
+			execute_process(COMMAND ${ICU_ENV_VAR} sh -c "./configure --with-icu-source=${ICU_URL} --shared ${ICU_DEBUG}" WORKING_DIRECTORY "${NodeJS_OUTPUT_PATH}")
 
 			message(STATUS "Build NodeJS shared library")
 
@@ -474,9 +483,9 @@ if(NOT NodeJS_LIBRARY)
 			ProcessorCount(N)
 
 			if(NOT N EQUAL 0)
-				execute_process(COMMAND sh -c "alias python=`which python2.7`; make -j${N} -C out BUILDTYPE=${CMAKE_BUILD_TYPE} V=1" WORKING_DIRECTORY "${NodeJS_OUTPUT_PATH}")
+				execute_process(COMMAND sh -c "make -j${N} -C out BUILDTYPE=${CMAKE_BUILD_TYPE} V=1" WORKING_DIRECTORY "${NodeJS_OUTPUT_PATH}")
 			else()
-				execute_process(COMMAND sh -c "alias python=`which python2.7`; make -C out BUILDTYPE=${CMAKE_BUILD_TYPE} V=1" WORKING_DIRECTORY "${NodeJS_OUTPUT_PATH}")
+				execute_process(COMMAND sh -c "make -C out BUILDTYPE=${CMAKE_BUILD_TYPE} V=1" WORKING_DIRECTORY "${NodeJS_OUTPUT_PATH}")
 			endif()
 
 			message(STATUS "Install NodeJS shared library")

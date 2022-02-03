@@ -187,6 +187,7 @@ message(STATUS "Port ${target}")
 # 	${CMAKE_CURRENT_SOURCE_DIR}/include
 # 	${CMAKE_CURRENT_BINARY_DIR}/include
 
+# 	$<TARGET_PROPERTY:${META_PROJECT_NAME}::metacall,INCLUDE_DIRECTORIES> # MetaCall includes
 # 	${JAVA_INCLUDE_DIRS} # Java includes
 # 	${JNI_INCLUDE_DIRS} # JNI includes
 
@@ -293,7 +294,7 @@ message(STATUS "Port ${target}")
 # #
 
 # set(java_port_test "${target}_test")
-# set(java_port_test_path "${CMAKE_BINARY_DIR}/${java_port_test}.java")
+# set(java_port_test_path "${PROJECT_OUTPUT_DIR}/${java_port_test}.java")
 
 # # Require module name
 # if(CMAKE_BUILD_TYPE STREQUAL "Debug")

@@ -2,7 +2,7 @@
  *	Reflect Library by Parra Studios
  *	A library for provide reflection and metadata representation.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -266,7 +266,7 @@ int hello_world_class_impl_interface_static_set(klass cls, class_impl impl, stru
 	}
 	else if (strcmp(key, "c") == 0)
 	{
-		strncpy(hello_world->c, value_to_string(v), 10);
+		strncpy(hello_world->c, value_to_string(v), 9);
 	}
 
 	return 0;

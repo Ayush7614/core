@@ -2,7 +2,7 @@
  *	Reflect Library by Parra Studios
  *	A library for provide reflection and metadata representation.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -833,7 +833,7 @@ void class_constructors_destroy(klass cls)
 	}
 }
 
-void class_stats_debug()
+void class_stats_debug(void)
 {
 #if !(!defined(NDEBUG) || defined(DEBUG) || defined(_DEBUG) || defined(__DEBUG) || defined(__DEBUG__))
 	if (class_stats.allocations != class_stats.deallocations || class_stats.increments != class_stats.decrements)

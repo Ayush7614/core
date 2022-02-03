@@ -10,21 +10,26 @@ endif()
 find_package(LibFFI)
 
 if(NOT LIBFFI_FOUND)
-	message(STATUS "Foreing Function Interface libraries not found")
+	message(STATUS "Foreing Function Interface library not found")
 	return()
 endif()
 
-find_package(LLVM)
 
-if(NOT LLVM_FOUND)
-	message(STATUS "LLVM libraries not found")
-	return()
+find_package(LibTCC)
+
+if(NOT LIBTCC_FOUND)
+	include(InstallLibTCC)
+
+	if(NOT LIBTCC_FOUND)
+		message(STATUS "TCC library not found")
+		return()
+	endif()
 endif()
 
-find_package(Clang)
+find_package(LibClang 12)
 
-if(NOT CLANG_FOUND)
-	message(STATUS "Clang libraries not found")
+if(NOT LibClang_FOUND)
+	message(STATUS "Clang C API library not found")
 	return()
 endif()
 
@@ -91,6 +96,11 @@ add_library(${target} MODULE
 	${headers}
 )
 
+# If it has been installed by CMake, make LibTCC a dependency
+if(LIBTCC_TARGET)
+	add_dependencies(${target} ${LIBTCC_TARGET})
+endif()
+
 # Create namespaced alias
 add_library(${META_PROJECT_NAME}::${target} ALIAS ${target})
 
@@ -146,9 +156,9 @@ target_include_directories(${target}
 	${CMAKE_CURRENT_BINARY_DIR}/include
 
 	$<TARGET_PROPERTY:${META_PROJECT_NAME}::metacall,INCLUDE_DIRECTORIES> # MetaCall includes
-	${LIBFFI_INCLUDE_DIRS} # FFI includes
-	${LLVM_INCLUDE_DIRS} # LLVM includes
-	${CLANG_INCLUDE_DIRS} # Clang includes
+	${LIBFFI_INCLUDE_DIR} # FFI includes
+	${LIBTCC_INCLUDE_DIR} # TCC includes
+	${LibClang_INCLUDE_DIR} # Clang C API includes
 
 	PUBLIC
 	${DEFAULT_INCLUDE_DIRECTORIES}
@@ -166,9 +176,9 @@ target_include_directories(${target}
 target_link_libraries(${target}
 	PRIVATE
 	${META_PROJECT_NAME}::metacall # MetaCall library
-	${LIBFFI_LIBRARIES} # FFI libraries
-	${LLVM_LIBRARIES} # LLVM libraries
-	${CLANG_LIBS} # Clang libraries
+	${LIBFFI_LIBRARY} # FFI library
+	${LIBTCC_LIBRARY} # TCC library
+	${LibClang_LIBRARY} # Clang C API library
 
 	PUBLIC
 	${DEFAULT_LIBRARIES}
@@ -187,9 +197,6 @@ target_compile_definitions(${target}
 	$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${target_upper}_STATIC_DEFINE>
 	${DEFAULT_COMPILE_DEFINITIONS}
 
-	${LIBFFI_DEFINITIONS} # FFI definitions
-	${LLVM_CPP_FLAGS} # LLVM definitions
-
 	INTERFACE
 )
 
@@ -203,8 +210,6 @@ target_compile_options(${target}
 	PUBLIC
 	${DEFAULT_COMPILE_OPTIONS}
 
-	${LLVM_CXX_FLAGS} # LLVM C++ compiler options
-
 	INTERFACE
 )
 
@@ -217,8 +222,6 @@ target_link_libraries(${target}
 
 	PUBLIC
 	${DEFAULT_LINKER_OPTIONS}
-
-	${LLVM_LD_FLAGS} # LLVM linker options
 
 	INTERFACE
 )

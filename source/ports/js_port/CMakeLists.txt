@@ -176,6 +176,7 @@ target_include_directories(${SWIG_MODULE_${target}_REAL_NAME}
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_BINARY_DIR}/include
 
+	$<TARGET_PROPERTY:${META_PROJECT_NAME}::metacall,INCLUDE_DIRECTORIES> # MetaCall includes
 	${V8_INCLUDE_DIR} # V8 includes
 
 	PUBLIC
@@ -294,7 +295,7 @@ string(TOUPPER ${js_port_test} js_port_test_upper)
 # Configure test scripts
 #
 
-set(js_port_test_path "${CMAKE_BINARY_DIR}/${js_port_test}.js")
+set(js_port_test_path "${PROJECT_OUTPUT_DIR}/${js_port_test}.js")
 
 # Require module name
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

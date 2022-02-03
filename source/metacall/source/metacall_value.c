@@ -2,7 +2,7 @@
  *	MetaCall Library by Parra Studios
  *	A library for providing a foreign function interface calls.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -155,7 +155,7 @@ void *metacall_value_create_function_closure(void *f, void *c)
 	return value_create_function_closure(f, c);
 }
 
-void *metacall_value_create_null()
+void *metacall_value_create_null(void)
 {
 	return value_create_null();
 }

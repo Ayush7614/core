@@ -1,6 +1,6 @@
 /*
  *	Logger Library by Parra Studios
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	A generic logger library providing application execution reports.
  *
@@ -26,7 +26,7 @@ struct log_record_type
 /* -- Private Methods -- */
 
 #if defined(LOG_RECORD_FUNCTION_UNKNOWN_IMPL)
-const char *__log_record_unknown_function__()
+const char *__log_record_unknown_function__(void)
 {
 	static const char __log_record_unknown_function_impl__[] = "unknown_function";
 
@@ -36,7 +36,7 @@ const char *__log_record_unknown_function__()
 
 /* -- Protected Methods -- */
 
-size_t log_record_size()
+size_t log_record_size(void)
 {
 	return sizeof(struct log_record_type);
 }
@@ -82,7 +82,7 @@ const time_t *log_record_time(log_record record)
 	return &record->time;
 }
 
-size_t log_record_thread_id(log_record record)
+uint64_t log_record_thread_id(log_record record)
 {
 	return record->id;
 }

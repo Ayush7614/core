@@ -14,7 +14,8 @@ rustc_private = true
 opt-level = "z"
 
 [workspace]
-members = ["parser", "metacall_registrator"]
+members = ["api", "compiler"]
 
 [dependencies]
-metacall_registrator = { path = "metacall_registrator" }
+api = { path = "./api" }
+compiler = { path = "./compiler" }

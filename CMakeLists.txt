@@ -57,11 +57,15 @@ set(META_PROJECT_DESCRIPTION	"A library for providing inter-language foreign fun
 set(META_AUTHOR_ORGANIZATION	"MetaCall Inc.")
 set(META_AUTHOR_DOMAIN			"https://metacall.io/")
 set(META_AUTHOR_MAINTAINER		"vic798@gmail.com")
-set(META_VERSION_MAJOR			"0")
-set(META_VERSION_MINOR			"1")
-set(META_VERSION_PATCH			"0")
+
+# Parse version
+file(READ VERSION META_VERSION)
+string(REPLACE "\n" "" META_VERSION ${META_VERSION})
+string(REPLACE "." ";" META_VERSION_LIST ${META_VERSION})
+list(GET META_VERSION_LIST 0 META_VERSION_MAJOR)
+list(GET META_VERSION_LIST 1 META_VERSION_MINOR)
+list(GET META_VERSION_LIST 2 META_VERSION_PATCH)
 set(META_VERSION_REVISION		"${GIT_REV}")
-set(META_VERSION				"${META_VERSION_MAJOR}.${META_VERSION_MINOR}.${META_VERSION_PATCH}")
 set(META_NAME_VERSION			"${META_PROJECT_NAME} v${META_VERSION} (${META_VERSION_REVISION})")
 
 #
@@ -86,6 +90,7 @@ option(OPTION_BUILD_PIC			"Build with position independent code."						ON)
 option(OPTION_BUILD_SECURITY	"Build with stack-smashing protection and source fortify."	ON)
 option(OPTION_BUILD_BACKTRACE	"Build with backtracing support."							ON)
 option(OPTION_BUILD_GUIX		"Disable all build system unreproductible operations."		OFF)
+option(OPTION_GIT_HOOKS			"Disable git hooks when running in CI/CD."					ON)
 option(OPTION_FORK_SAFE			"Enable fork safety."										ON)
 option(OPTION_THREAD_SAFE		"Enable thread safety."										OFF)
 option(OPTION_COVERAGE			"Enable coverage."											OFF)
@@ -94,6 +99,13 @@ option(OPTION_COVERAGE			"Enable coverage."											OFF)
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Define the type of build." FORCE)
 	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "RelWithDebInfo" "MinSizeRel")
+endif()
+
+# Binary directory
+if(MSVC AND NOT ("${CMAKE_GENERATOR}" STREQUAL "NMake Makefiles" OR "${CMAKE_GENERATOR}" STREQUAL "NMake Makefiles JOM"))
+	set(PROJECT_OUTPUT_DIR "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
+else()
+	set(PROJECT_OUTPUT_DIR "${CMAKE_BINARY_DIR}")
 endif()
 
 #
@@ -311,8 +323,10 @@ install(FILES README.md	DESTINATION ${INSTALL_ROOT} COMPONENT runtime)
 # Install githooks directory
 #
 
-message(STATUS "Installing git hooks at ${CMAKE_CURRENT_SOURCE_DIR} with `git config --local core.hooksPath githooks`")
-execute_process(
-    COMMAND git config --local core.hooksPath githooks
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
+if(OPTION_GIT_HOOKS)
+	message(STATUS "Installing git hooks at ${CMAKE_CURRENT_SOURCE_DIR}")
+	execute_process(
+		COMMAND git config --local core.hooksPath githooks
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
+endif()

@@ -2,7 +2,7 @@
 #	MetaCall Ports by Parra Studios
 #	A complete infrastructure for supporting multiple language bindings in MetaCall.
 #
-#	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+#	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 #
 #	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ endif()
 
 # Project options
 option(OPTION_BUILD_PORTS_CS	"Build C# port."				ON)
-option(OPTION_BUILD_PORTS_CXX	"Build C++ port."				ON)
+option(OPTION_BUILD_PORTS_CXX	"Build C++ port."				OFF)
 option(OPTION_BUILD_PORTS_D		"Build D port."					OFF)
 option(OPTION_BUILD_PORTS_GO	"Build Go port."				OFF)
 option(OPTION_BUILD_PORTS_JAVA	"Build Java port."				OFF)

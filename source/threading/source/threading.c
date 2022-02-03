@@ -2,7 +2,7 @@
  *	Thrading Library by Parra Studios
  *	A threading library providing utilities for lock-free data structures and more.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@
 
 #include <threading/threading.h>
 
-const char *threading_print_info()
+const char *threading_print_info(void)
 {
 	static const char threading_info[] =
-		"Abstract Data Type Library " METACALL_VERSION "\n"
-		"Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
+		"Threading Library " METACALL_VERSION "\n"
+		"Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
 
 #ifdef ADT_STATIC_DEFINE
 		"Compiled as static library type"

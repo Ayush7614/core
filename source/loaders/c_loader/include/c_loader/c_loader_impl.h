@@ -2,7 +2,7 @@
  *	Loader Library by Parra Studios
  *	A plugin for loading c code at run-time into a process.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -33,7 +33,11 @@ C_LOADER_API loader_impl_data c_loader_impl_initialize(loader_impl impl, configu
 
 C_LOADER_API int c_loader_impl_execution_path(loader_impl impl, const loader_naming_path path);
 
-C_LOADER_API loader_handle c_loader_impl_load(loader_impl impl, const loader_naming_path path, loader_naming_name name);
+C_LOADER_API loader_handle c_loader_impl_load_from_file(loader_impl impl, const loader_naming_path paths[], size_t size);
+
+C_LOADER_API loader_handle c_loader_impl_load_from_memory(loader_impl impl, const loader_naming_name name, const char *buffer, size_t size);
+
+C_LOADER_API loader_handle c_loader_impl_load_from_package(loader_impl impl, const loader_naming_path path);
 
 C_LOADER_API int c_loader_impl_clear(loader_impl impl, loader_handle handle);
 

@@ -2,7 +2,7 @@
  *	Reflect Library by Parra Studios
  *	A library for provide reflection and metadata representation.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -383,7 +383,7 @@ int object_delete(object obj)
 	return 1;
 }
 
-void object_stats_debug()
+void object_stats_debug(void)
 {
 #if !(!defined(NDEBUG) || defined(DEBUG) || defined(_DEBUG) || defined(__DEBUG) || defined(__DEBUG__))
 	if (object_stats.allocations != object_stats.deallocations || object_stats.increments != object_stats.decrements)

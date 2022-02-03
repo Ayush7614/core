@@ -33,22 +33,20 @@ include(SecurityFlags)
 string(TOUPPER ${META_PROJECT_NAME} META_PROJECT_NAME_UPPER)
 string(TOLOWER ${META_PROJECT_NAME} META_PROJECT_NAME_LOWER)
 
-set(template_include_path "${CMAKE_CURRENT_SOURCE_DIR}/include/${target}")
-set(template_source_path  "${CMAKE_CURRENT_SOURCE_DIR}/source")
-
-set(include_path "${CMAKE_BINARY_DIR}/source/include/${META_PROJECT_NAME_LOWER}")
-set(source_path  "${CMAKE_BINARY_DIR}/source/${META_PROJECT_NAME_LOWER}/source")
+set(include_path "${CMAKE_CURRENT_SOURCE_DIR}/include/${target}")
+set(include_binary_path "${CMAKE_BINARY_DIR}/source/include/${META_PROJECT_NAME_LOWER}")
+set(source_path  "${CMAKE_CURRENT_SOURCE_DIR}/source")
 
 # Generate version-header
-configure_file(${template_include_path}/version.h.in ${include_path}/${META_PROJECT_NAME_LOWER}_version.h)
-configure_file(${template_source_path}/version.c.in ${source_path}/${META_PROJECT_NAME_LOWER}_version.c)
+configure_file(${include_path}/version.h.in ${include_binary_path}/${META_PROJECT_NAME_LOWER}_version.h)
 
 set(headers
-	${include_path}/${META_PROJECT_NAME_LOWER}_version.h
+	${include_binary_path}/${META_PROJECT_NAME_LOWER}_version.h
+	${include_path}/version.h
 )
 
 set(sources
-	${source_path}/${META_PROJECT_NAME_LOWER}_version.c
+	${source_path}/version.c
 )
 
 # Group source files
@@ -56,8 +54,6 @@ set(header_group "Header Files (API)")
 set(source_group "Source Files")
 source_group_by_path(${include_path} "\\\\.h$|\\\\.hpp$"
 	${header_group} ${headers})
-source_group_by_path(${source_path}  "\\\\.cpp$|\\\\.c$|\\\\.h$|\\\\.hpp$"
-	${source_group} ${sources})
 
 #
 # Create library
@@ -65,8 +61,8 @@ source_group_by_path(${source_path}  "\\\\.cpp$|\\\\.c$|\\\\.h$|\\\\.hpp$"
 
 # Build library
 add_library(${target}
-	${sources}
 	${headers}
+	${sources}
 )
 
 # Create namespaced alias
@@ -184,13 +180,4 @@ target_link_libraries(${target}
 	${DEFAULT_LINKER_OPTIONS}
 
 	INTERFACE
-)
-
-#
-# Deployment
-#
-
-# Export
-install(TARGETS ${target}
-	EXPORT  "${target}-export" COMPONENT dev
 )

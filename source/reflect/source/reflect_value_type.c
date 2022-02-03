@@ -2,7 +2,7 @@
  *	Reflect Library by Parra Studios
  *	A library for provide reflection and metadata representation.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -272,7 +272,7 @@ value value_create_function_closure(function f, void *c)
 	return v;
 }
 
-value value_create_null()
+value value_create_null(void)
 {
 	return value_type_create(NULL, 0, TYPE_NULL);
 }

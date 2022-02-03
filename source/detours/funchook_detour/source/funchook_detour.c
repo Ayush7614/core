@@ -1,6 +1,6 @@
 /*
  *	Detour Library by Parra Studios
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	A cross-platform library providing detours, function hooks and trampolines.
  *
@@ -15,7 +15,7 @@
 
 /* -- Methods -- */
 
-detour_interface funchook_detour_impl_interface_singleton()
+detour_interface funchook_detour_impl_interface_singleton(void)
 {
 	static struct detour_interface_type interface_instance_funchook = {
 		&funchook_detour_impl_initialize,
@@ -27,11 +27,11 @@ detour_interface funchook_detour_impl_interface_singleton()
 	return &interface_instance_funchook;
 }
 
-const char *funchook_detour_print_info()
+const char *funchook_detour_print_info(void)
 {
 	static const char funchook_detour_info[] =
 		"FuncHook Detour Plugin " METACALL_VERSION "\n"
-		"Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
+		"Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
 
 #ifdef FUNCHOOK_DETOUR_STATIC_DEFINE
 		"Compiled as static library type\n"

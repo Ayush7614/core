@@ -2,7 +2,7 @@
  *	Logger Library by Parra Studios
  *	A generic logger library providing application execution reports.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -30,12 +30,12 @@
 
 /* -- Methods -- */
 
-void *log_instance()
+void *log_instance(void)
 {
 	return log_singleton_instance();
 }
 
-size_t log_size()
+size_t log_size(void)
 {
 	return log_singleton_size();
 }
@@ -244,11 +244,11 @@ int log_delete(const char *name)
 	return log_impl_destroy(impl);
 }
 
-const char *log_print_info()
+const char *log_print_info(void)
 {
 	static const char log_info[] =
 		"Logger Library " METACALL_VERSION "\n"
-		"Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
+		"Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
 
 #ifdef LOG_STATIC_DEFINE
 		"Compiled as static library type\n"

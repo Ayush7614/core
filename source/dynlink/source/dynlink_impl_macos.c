@@ -2,7 +2,7 @@
  *	Dynamic Link Library by Parra Studios
  *	A library for dynamic loading and linking shared objects at run-time.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -148,6 +148,15 @@ int dynlink_impl_interface_unload_macos(dynlink handle, dynlink_impl impl)
 	return NSUnLinkModule(impl, 0) == TRUE ? 0 : 1;
 }
 
+char *dynlink_impl_interface_lib_path_macos(dynlink_name name, int (*comparator)(dynlink_path, dynlink_name))
+{
+	/* TODO */
+	(void)name;
+	(void)comparator;
+
+	return NULL;
+}
+
 dynlink_impl_interface dynlink_impl_interface_singleton_macos(void)
 {
 	static struct dynlink_impl_interface_type impl_interface_macos = {
@@ -155,7 +164,8 @@ dynlink_impl_interface dynlink_impl_interface_singleton_macos(void)
 		&dynlink_impl_interface_get_name_macos,
 		&dynlink_impl_interface_load_macos,
 		&dynlink_impl_interface_symbol_macos,
-		&dynlink_impl_interface_unload_macos
+		&dynlink_impl_interface_unload_macos,
+		&dynlink_impl_interface_lib_path_macos
 	};
 
 	return &impl_interface_macos;

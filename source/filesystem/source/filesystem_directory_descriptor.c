@@ -2,7 +2,7 @@
  *	File System Library by Parra Studios
  *	A cross-platform library for managing file system, paths and files.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ directory_descriptor directory_descriptor_create(directory_descriptor parent, co
 
 		d->parent = parent;
 
-		strncpy(d->path, path, DIRECTORY_DESCRIPTOR_PATH_SIZE);
+		strncpy(d->path, path, DIRECTORY_DESCRIPTOR_PATH_SIZE - 1);
 
 		return d;
 	}

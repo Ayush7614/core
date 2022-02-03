@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Fetch all tags first
+git fetch --tags $1
+
+# Get the latest tag version
+GIT_TAG_VERSION=$(git describe --tags `git rev-list --tags --max-count=1` | cut -c2-)
+FILE_VERSION=$(cat VERSION)
+
+# Checkout if the file version matches the last tag
+if [ "${GIT_TAG_VERSION}" != "${FILE_VERSION}" ]; then
+    # Undo the last tag, update the version file and commit as the new tag
+    git tag -d v${GIT_TAG_VERSION}
+    printf "${GIT_TAG_VERSION}" &> VERSION
+    git add VERSION
+    git commit -m "Update version to v${GIT_TAG_VERSION}."
+    git tag v${GIT_TAG_VERSION}
+    printf "\033[0;31mYour push has been rejected in order to update VERSION.\033[0m\n"
+    printf "\033[0;32mPush again with:\033[0m git push $1 `git rev-parse --abbrev-ref HEAD` v${GIT_TAG_VERSION}\n"
+    exit 1
+fi

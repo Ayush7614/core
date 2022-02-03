@@ -1,6 +1,6 @@
 /*
 *	Logger Library by Parra Studios
-*	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+*	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 *
 *	A generic logger library providing application execution reports.
 *
@@ -78,7 +78,7 @@ static int log_policy_format_text_destroy(log_policy policy);
 
 /* -- Methods -- */
 
-log_policy_interface log_policy_format_text_interface()
+log_policy_interface log_policy_format_text_interface(void)
 {
 	static struct log_policy_format_impl_type log_policy_format_text_impl_obj = {
 		&log_policy_format_text_size,

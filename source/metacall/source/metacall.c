@@ -2,7 +2,7 @@
  *	MetaCall Library by Parra Studios
  *	A library for providing a foreign function interface calls.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@
 
 #include <metacall/metacall.h>
 #include <metacall/metacall_loaders.h>
-#include <metacall/metacall_version.h>
 
 #include <loader/loader.h>
 
@@ -35,6 +34,8 @@
 #include <serial/serial.h>
 
 #include <backtrace/backtrace.h>
+
+#include <environment/environment_variable.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -50,7 +51,7 @@ typedef value (*method_invoke_ptr)(void *, method, void *[], size_t);
 
 /* -- Global Variables -- */
 
-void *metacall_null_args[1];
+void *metacall_null_args[1] = { NULL };
 
 /* -- Private Variables -- */
 
@@ -67,14 +68,14 @@ static type_id *metacall_type_ids(void *args[], size_t size);
 
 /* -- Methods -- */
 
-const char *metacall_serial()
+const char *metacall_serial(void)
 {
 	static const char metacall_serial_str[] = METACALL_SERIAL;
 
 	return metacall_serial_str;
 }
 
-void metacall_log_null()
+void metacall_log_null(void)
 {
 	metacall_log_null_flag = 0;
 }
@@ -84,7 +85,7 @@ void metacall_flags(int flags)
 	metacall_config_flags = flags;
 }
 
-int metacall_initialize()
+int metacall_initialize(void)
 {
 	loader l = loader_singleton();
 
@@ -105,12 +106,6 @@ int metacall_initialize()
 		log_write("metacall", LOG_LEVEL_DEBUG, "MetaCall default logger to stdout initialized");
 	}
 
-	/* Initialize backtrace for catching segmentation faults */
-	if (backtrace_initialize() != 0)
-	{
-		log_write("metacall", LOG_LEVEL_WARNING, "MetaCall backtrace could not be initialized");
-	}
-
 	if (metacall_initialize_flag == 0)
 	{
 		log_write("metacall", LOG_LEVEL_DEBUG, "MetaCall already initialized <%p>", (void *)l);
@@ -120,7 +115,18 @@ int metacall_initialize()
 
 	log_write("metacall", LOG_LEVEL_DEBUG, "Initializing MetaCall <%p>", (void *)l);
 
-	metacall_null_args[0] = NULL;
+	/* Initialize backtrace for catching segmentation faults */
+	if (backtrace_initialize() != 0)
+	{
+		log_write("metacall", LOG_LEVEL_WARNING, "MetaCall backtrace could not be initialized");
+	}
+
+	/* Initialize MetaCall version environment variable */
+	if (environment_variable_set_expand(METACALL_VERSION) != 0)
+	{
+		log_write("metacall", LOG_LEVEL_ERROR, "MetaCall environment variables could not be initialized");
+		return 1;
+	}
 
 #ifdef METACALL_FORK_SAFE
 	if (metacall_config_flags & METACALL_FLAGS_FORK_SAFE)
@@ -210,12 +216,12 @@ void metacall_initialize_args(int argc, char *argv[])
 	metacall_initialize_argv = argv;
 }
 
-char **metacall_argv()
+char **metacall_argv(void)
 {
 	return metacall_initialize_argv;
 }
 
-int metacall_argc()
+int metacall_argc(void)
 {
 	return metacall_initialize_argc;
 }
@@ -225,7 +231,7 @@ int metacall_is_initialized(const char *tag)
 	return loader_is_initialized(tag);
 }
 
-size_t metacall_args_size()
+size_t metacall_args_size(void)
 {
 	const size_t args_size = METACALL_ARGS_SIZE;
 
@@ -241,7 +247,7 @@ int metacall_execution_path(const char *tag, const char *path)
 		return 1;
 	}
 
-	strncpy(path_impl, path, LOADER_NAMING_PATH_SIZE);
+	strncpy(path_impl, path, LOADER_NAMING_PATH_SIZE - 1);
 
 	return loader_execution_path(tag, path_impl);
 }
@@ -337,6 +343,13 @@ void *metacallv_s(const char *name, void *args[], size_t size)
 
 void *metacallhv(void *handle, const char *name, void *args[])
 {
+	if (loader_impl_handle_validate(handle) != 0)
+	{
+		// TODO: Implement type error return a value
+		log_write("metacall", LOG_LEVEL_ERROR, "Handle %p passed to metacallhv is not valid", handle);
+		return NULL;
+	}
+
 	value f_val = loader_handle_get(handle, name);
 	function f = NULL;
 
@@ -350,6 +363,13 @@ void *metacallhv(void *handle, const char *name, void *args[])
 
 void *metacallhv_s(void *handle, const char *name, void *args[], size_t size)
 {
+	if (loader_impl_handle_validate(handle) != 0)
+	{
+		// TODO: Implement type error return a value
+		log_write("metacall", LOG_LEVEL_ERROR, "Handle %p passed to metacallhv_s is not valid", handle);
+		return NULL;
+	}
+
 	value f_val = loader_handle_get(handle, name);
 	function f = NULL;
 
@@ -431,7 +451,8 @@ void *metacall(const char *name, ...)
 			}
 			else
 			{
-				args[iterator] = NULL;
+				log_write("metacall", LOG_LEVEL_ERROR, "Calling metacall with unsupported type '%s', using null type instead", type_id_name(id));
+				args[iterator] = metacall_value_create_null();
 			}
 		}
 
@@ -441,7 +462,7 @@ void *metacall(const char *name, ...)
 
 		for (iterator = 0; iterator < args_count; ++iterator)
 		{
-			value_destroy(args[iterator]);
+			value_type_destroy(args[iterator]);
 		}
 
 		if (ret != NULL)
@@ -546,7 +567,8 @@ void *metacallt(const char *name, const enum metacall_value_id ids[], ...)
 			}
 			else
 			{
-				args[iterator] = NULL;
+				log_write("metacall", LOG_LEVEL_ERROR, "Calling metacallt with unsupported type '%s', using null type instead", type_id_name(id));
+				args[iterator] = metacall_value_create_null();
 			}
 		}
 
@@ -556,7 +578,7 @@ void *metacallt(const char *name, const enum metacall_value_id ids[], ...)
 
 		for (iterator = 0; iterator < args_count; ++iterator)
 		{
-			value_destroy(args[iterator]);
+			value_type_destroy(args[iterator]);
 		}
 
 		return ret;
@@ -644,7 +666,8 @@ void *metacallt_s(const char *name, const enum metacall_value_id ids[], size_t s
 			}
 			else
 			{
-				args[iterator] = NULL;
+				log_write("metacall", LOG_LEVEL_ERROR, "Calling metacallt_s with unsupported type '%s', using null type instead", type_id_name(id));
+				args[iterator] = metacall_value_create_null();
 			}
 		}
 
@@ -654,7 +677,7 @@ void *metacallt_s(const char *name, const enum metacall_value_id ids[], size_t s
 
 		for (iterator = 0; iterator < size; ++iterator)
 		{
-			value_destroy(args[iterator]);
+			value_type_destroy(args[iterator]);
 		}
 
 		return ret;
@@ -665,6 +688,13 @@ void *metacallt_s(const char *name, const enum metacall_value_id ids[], size_t s
 
 void *metacallht_s(void *handle, const char *name, const enum metacall_value_id ids[], size_t size, ...)
 {
+	if (loader_impl_handle_validate(handle) != 0)
+	{
+		// TODO: Implement type error return a value
+		log_write("metacall", LOG_LEVEL_ERROR, "Handle %p passed to metacallht_s is not valid", handle);
+		return NULL;
+	}
+
 	value f_val = loader_handle_get(handle, name);
 	function f = NULL;
 
@@ -742,7 +772,8 @@ void *metacallht_s(void *handle, const char *name, const enum metacall_value_id 
 			}
 			else
 			{
-				args[iterator] = NULL;
+				log_write("metacall", LOG_LEVEL_ERROR, "Calling metacallht_s with unsupported type '%s', using null type instead", type_id_name(id));
+				args[iterator] = metacall_value_create_null();
 			}
 		}
 
@@ -752,7 +783,7 @@ void *metacallht_s(void *handle, const char *name, const enum metacall_value_id 
 
 		for (iterator = 0; iterator < size; ++iterator)
 		{
-			value_destroy(args[iterator]);
+			value_type_destroy(args[iterator]);
 		}
 
 		return ret;
@@ -776,6 +807,13 @@ void *metacall_function(const char *name)
 
 void *metacall_handle_function(void *handle, const char *name)
 {
+	if (loader_impl_handle_validate(handle) != 0)
+	{
+		// TODO: Implement type error return a value
+		log_write("metacall", LOG_LEVEL_ERROR, "Handle %p passed to metacall_handle_function is not valid", handle);
+		return NULL;
+	}
+
 	value f_val = loader_handle_get(handle, name);
 	function f = NULL;
 
@@ -857,8 +895,10 @@ void *metacall_handle(const char *tag, const char *name)
 
 const char *metacall_handle_id(void *handle)
 {
-	if (handle == NULL)
+	if (loader_impl_handle_validate(handle) != 0)
 	{
+		// TODO: Implement error handling
+		log_write("metacall", LOG_LEVEL_ERROR, "Handle %p passed to metacall_handle_id is not valid", handle);
 		return NULL;
 	}
 
@@ -867,8 +907,10 @@ const char *metacall_handle_id(void *handle)
 
 void *metacall_handle_export(void *handle)
 {
-	if (handle == NULL)
+	if (loader_impl_handle_validate(handle) != 0)
 	{
+		// TODO: Implement type error return a value
+		log_write("metacall", LOG_LEVEL_ERROR, "Handle %p passed to metacall_handle_export is not valid", handle);
 		return NULL;
 	}
 
@@ -903,6 +945,13 @@ void *metacallfv_s(void *func, void *args[], size_t size)
 
 		for (iterator = 0; iterator < size; ++iterator)
 		{
+			if (value_validate(args[iterator]) != 0)
+			{
+				// TODO: Implement type error return a value
+				log_write("metacall", LOG_LEVEL_ERROR, "Invalid argument at position %" PRIuS " when calling to metacallfv_s", iterator);
+				return NULL;
+			}
+
 			type t = signature_get_type(s, iterator);
 
 			if (t != NULL)
@@ -1010,7 +1059,8 @@ void *metacallf(void *func, ...)
 			}
 			else
 			{
-				args[iterator] = NULL;
+				log_write("metacall", LOG_LEVEL_ERROR, "Calling metacallf with unsupported type '%s', using null type instead", type_id_name(id));
+				args[iterator] = metacall_value_create_null();
 			}
 		}
 
@@ -1020,7 +1070,7 @@ void *metacallf(void *func, ...)
 
 		for (iterator = 0; iterator < args_count; ++iterator)
 		{
-			value_destroy(args[iterator]);
+			value_type_destroy(args[iterator]);
 		}
 
 		return ret;
@@ -1141,6 +1191,20 @@ void *metacallfmv(void *func, void *keys[], void *values[])
 
 		for (iterator = 0; iterator < args_count; ++iterator)
 		{
+			if (value_validate(keys[iterator]) != 0)
+			{
+				// TODO: Implement type error return a value
+				log_write("metacall", LOG_LEVEL_ERROR, "Invalid key at position %" PRIuS " when calling to metacallfmv", iterator);
+				return NULL;
+			}
+
+			if (value_validate(values[iterator]) != 0)
+			{
+				// TODO: Implement type error return a value
+				log_write("metacall", LOG_LEVEL_ERROR, "Invalid value at position %" PRIuS " when calling to metacallfmv", iterator);
+				return NULL;
+			}
+
 			type_id key_id = value_type_id((value)keys[iterator]);
 
 			size_t index = METACALL_ARGS_SIZE;
@@ -1458,6 +1522,20 @@ void *metacallfmv_await_s(void *func, void *keys[], void *values[], size_t size,
 
 		for (iterator = 0; iterator < size; ++iterator)
 		{
+			if (value_validate(keys[iterator]) != 0)
+			{
+				// TODO: Implement type error return a value
+				log_write("metacall", LOG_LEVEL_ERROR, "Invalid key at position %" PRIuS " when calling to metacallfmv_await_s", iterator);
+				return NULL;
+			}
+
+			if (value_validate(values[iterator]) != 0)
+			{
+				// TODO: Implement type error return a value
+				log_write("metacall", LOG_LEVEL_ERROR, "Invalid value at position %" PRIuS " when calling to metacallfmv_await_s", iterator);
+				return NULL;
+			}
+
 			type_id key_id = value_type_id((value)keys[iterator]);
 
 			size_t index = METACALL_ARGS_SIZE;
@@ -1848,6 +1926,14 @@ void *metacallv_method(void *target, const char *name, method_invoke_ptr call, v
 
 	for (iterator = 0; iterator < size; ++iterator)
 	{
+		if (value_validate(args[iterator]) != 0)
+		{
+			// TODO: Implement type error return a value
+			log_write("metacall", LOG_LEVEL_ERROR, "Invalid argument at position %" PRIuS " when calling to metacallv_method", iterator);
+			vector_destroy(v);
+			return NULL;
+		}
+
 		type t = signature_get_type(s, iterator);
 
 		if (t != NULL)
@@ -2022,10 +2108,17 @@ void *metacall_deserialize(const char *name, const char *buffer, size_t size, vo
 
 int metacall_clear(void *handle)
 {
+	if (loader_impl_handle_validate(handle) != 0)
+	{
+		// TODO: Implement error handling
+		log_write("metacall", LOG_LEVEL_ERROR, "Handle %p passed to metacall_clear is not valid", handle);
+		return 1;
+	}
+
 	return loader_clear(handle);
 }
 
-int metacall_destroy()
+int metacall_destroy(void)
 {
 	if (metacall_initialize_flag == 0)
 	{
@@ -2053,11 +2146,63 @@ int metacall_destroy()
 	return 0;
 }
 
-const char *metacall_print_info()
+const struct metacall_version_type *metacall_version(void)
+{
+	static const struct metacall_version_type version = {
+		METACALL_VERSION_MAJOR_ID,
+		METACALL_VERSION_MINOR_ID,
+		METACALL_VERSION_PATCH_ID,
+		METACALL_VERSION_REVISION,
+		METACALL_VERSION,
+		METACALL_NAME_VERSION
+	};
+
+	return &version;
+}
+
+uint32_t metacall_version_hex_make(unsigned int major, unsigned int minor, unsigned int patch)
+{
+	const uint32_t version_hex = (major << 0x18) + (minor << 0x10) + patch;
+
+	return version_hex;
+}
+
+uint32_t metacall_version_hex(void)
+{
+	static const uint32_t version_hex =
+		(METACALL_VERSION_MAJOR_ID << 0x18) +
+		(METACALL_VERSION_MINOR_ID << 0x10) +
+		METACALL_VERSION_PATCH_ID;
+
+	return version_hex;
+}
+
+const char *metacall_version_str(void)
+{
+	static const char version_string[] = METACALL_VERSION;
+
+	return version_string;
+}
+
+const char *metacall_version_revision(void)
+{
+	static const char version_revision[] = METACALL_VERSION_REVISION;
+
+	return version_revision;
+}
+
+const char *metacall_version_name(void)
+{
+	static const char version_name[] = METACALL_NAME_VERSION;
+
+	return version_name;
+}
+
+const char *metacall_print_info(void)
 {
 	static const char metacall_info[] =
 		"MetaCall Library " METACALL_VERSION "\n"
-		"Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
+		"Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
 
 #ifdef METACALL_STATIC_DEFINE
 		"Compiled as static library type"

@@ -13,13 +13,4 @@ pub use lifecycle::rs_loader_impl_execution_path;
 pub use lifecycle::rs_loader_impl_initialize;
 pub use lifecycle::rs_loader_impl_load_from_file;
 pub use lifecycle::rs_loader_impl_load_from_memory;
-pub use lifecycle::rs_loader_impl_load_from_package;
-
-pub struct LoaderLifecycleState {
-    execution_paths: Vec<PathBuf>,
-}
-impl LoaderLifecycleState {
-    pub fn new(execution_paths: Vec<PathBuf>) -> LoaderLifecycleState {
-        LoaderLifecycleState { execution_paths }
-    }
-}
+// pub use lifecycle::rs_loader_impl_load_from_package;

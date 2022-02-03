@@ -1,6 +1,6 @@
 /*
  *	Serial Library by Parra Studios
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	A cross-platform library for managing multiple serialization and deserialization formats.
  *
@@ -22,7 +22,7 @@ static value metacall_serial_impl_deserialize_value(const char *buffer, size_t s
 
 /* -- Methods -- */
 
-const char *metacall_serial_impl_extension()
+const char *metacall_serial_impl_extension(void)
 {
 	static const char extension[] = "meta";
 

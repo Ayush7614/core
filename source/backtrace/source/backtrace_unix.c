@@ -2,7 +2,7 @@
  *	Backtrace Library by Parra Studios
  *	A cross-platform library for supporting SEGV catching and backtracing.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -34,7 +34,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ucontext.h>
+#if (defined(__APPLE__) && defined(__MACH__)) || defined(__MACOSX__)
+	#include <sys/ucontext.h>
+#else
+	#include <ucontext.h>
+#endif
 #include <unistd.h>
 
 /* -- Definitions -- */
@@ -69,7 +73,7 @@ static void backtrace_handler(int sig_num, siginfo_t *info, void *ucontext)
 	exit(EXIT_FAILURE);
 }
 
-int backtrace_initialize()
+int backtrace_initialize(void)
 {
 	struct sigaction sigact;
 
@@ -79,7 +83,7 @@ int backtrace_initialize()
 	return sigaction(SIGSEGV, &sigact, (struct sigaction *)NULL);
 }
 
-int backtrace_destroy()
+int backtrace_destroy(void)
 {
 	return sigaction(SIGSEGV, (const struct sigaction *)SIG_DFL, (struct sigaction *)NULL);
 }

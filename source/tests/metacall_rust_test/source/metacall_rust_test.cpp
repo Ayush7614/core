@@ -2,7 +2,7 @@
  *	Loader Library by Parra Studios
  *	A plugin for loading ruby code at run-time into a process.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -22,12 +22,12 @@
 
 #include <metacall/metacall.h>
 
-class metacall_rs_test : public testing::Test
+class metacall_rust_test : public testing::Test
 {
 protected:
 };
 
-TEST_F(metacall_rs_test, DefaultConstructor)
+TEST_F(metacall_rust_test, DefaultConstructor)
 {
 	const char *rs_scripts[] = {
 		"basic.rs"
@@ -36,6 +36,29 @@ TEST_F(metacall_rs_test, DefaultConstructor)
 	ASSERT_EQ((int)0, (int)metacall_initialize());
 
 	EXPECT_EQ((int)0, (int)metacall_load_from_file("rs", rs_scripts, sizeof(rs_scripts) / sizeof(rs_scripts[0]), NULL));
+
+	// TODO: Call
+
+	/* Print inspect information */
+	{
+		size_t size = 0;
+
+		struct metacall_allocator_std_type std_ctx = { &std::malloc, &std::realloc, &std::free };
+
+		void *allocator = metacall_allocator_create(METACALL_ALLOCATOR_STD, (void *)&std_ctx);
+
+		char *inspect_str = metacall_inspect(&size, allocator);
+
+		EXPECT_NE((char *)NULL, (char *)inspect_str);
+
+		EXPECT_GT((size_t)size, (size_t)0);
+
+		std::cout << inspect_str << std::endl;
+
+		metacall_allocator_free(allocator, inspect_str);
+
+		metacall_allocator_destroy(allocator);
+	}
 
 	EXPECT_EQ((int)0, (int)metacall_destroy());
 }

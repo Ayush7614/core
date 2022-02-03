@@ -2,7 +2,7 @@
  *	Loader Library by Parra Studios
  *	A plugin for loading dart code at run-time into a process.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 #include <dart_loader/dart_loader.h>
 #include <dart_loader/dart_loader_impl.h>
 
-loader_impl_interface dart_loader_impl_interface_singleton()
+loader_impl_interface dart_loader_impl_interface_singleton(void)
 {
 	static struct loader_impl_interface_type loader_impl_interface_dart = {
 		&dart_loader_impl_initialize,
@@ -39,11 +39,11 @@ loader_impl_interface dart_loader_impl_interface_singleton()
 	return &loader_impl_interface_dart;
 }
 
-const char *dart_loader_print_info()
+const char *dart_loader_print_info(void)
 {
 	static const char dart_loader_info[] =
 		"Dart Loader Plugin " METACALL_VERSION "\n"
-		"Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
+		"Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
 
 #ifdef DART_LOADER_STATIC_DEFINE
 		"Compiled as static library type\n"

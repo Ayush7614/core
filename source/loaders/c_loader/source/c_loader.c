@@ -2,7 +2,7 @@
  *	Loader Library by Parra Studios
  *	A plugin for loading c code at run-time into a process.
  *
- *	Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -28,7 +28,9 @@ loader_impl_interface c_loader_impl_interface_singleton(void)
 	static struct loader_impl_interface_type loader_impl_interface_c = {
 		&c_loader_impl_initialize,
 		&c_loader_impl_execution_path,
-		&c_loader_impl_load,
+		&c_loader_impl_load_from_file,
+		&c_loader_impl_load_from_memory,
+		&c_loader_impl_load_from_package,
 		&c_loader_impl_clear,
 		&c_loader_impl_discover,
 		&c_loader_impl_destroy
@@ -37,11 +39,11 @@ loader_impl_interface c_loader_impl_interface_singleton(void)
 	return &loader_impl_interface_c;
 }
 
-const char *c_loader_print_info()
+const char *c_loader_print_info(void)
 {
 	static const char c_loader_info[] =
 		"C Loader Plugin " METACALL_VERSION "\n"
-		"Copyright (C) 2016 - 2021 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
+		"Copyright (C) 2016 - 2022 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>\n"
 
 #ifdef C_LOADER_STATIC_DEFINE
 		"Compiled as static library type\n"

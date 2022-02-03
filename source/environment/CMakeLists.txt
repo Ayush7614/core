@@ -132,6 +132,7 @@ target_include_directories(${target}
 target_link_libraries(${target}
 	PRIVATE
 	${META_PROJECT_NAME}::version
+	${META_PROJECT_NAME}::preprocessor
 
 	PUBLIC
 	${DEFAULT_LIBRARIES}
@@ -178,13 +179,4 @@ target_link_libraries(${target}
 	${DEFAULT_LINKER_OPTIONS}
 
 	INTERFACE
-)
-
-#
-# Deployment
-#
-
-# Export
-install(TARGETS ${target}
-	EXPORT  "${target}-export" COMPONENT dev
 )

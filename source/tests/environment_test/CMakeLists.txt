@@ -81,6 +81,7 @@ target_link_libraries(${target}
 	GTest
 
 	${META_PROJECT_NAME}::version
+	${META_PROJECT_NAME}::preprocessor
 	${META_PROJECT_NAME}::environment
 )
 
